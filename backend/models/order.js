@@ -39,10 +39,6 @@ const orderSchema = new Schema({
         type: String,
         unique: true
     },
-    notes: {
-        type: String,
-        maxLength: 1000
-    }
 }, {
     timestamps: true // Automatically adds createdAt and updatedAt
 });

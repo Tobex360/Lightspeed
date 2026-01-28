@@ -12,6 +12,7 @@ import Dregister from './pages/landing/Dregister'
 import Uhome from './pages/user/Uhome'
 import Uhelp from './pages/user/Uhelp'
 import Usetting from './pages/user/Usetting'
+import Ucreate from './pages/user/Ucreate'
 
 
 import Dhome from './pages/driver/Dhome'
@@ -34,6 +35,7 @@ function App() {
         <Route path='/uhome' element={<Uhome />} />
         <Route path='/uhelp' element={<Uhelp />} />
         <Route path='/usetting' element={<Usetting />} />
+        <Route path='/ucreate' element={<Ucreate />} />
 
         <Route path='/dhome' element={<Dhome />} />
         <Route path='/dhelp' element={<Dhelp />} />

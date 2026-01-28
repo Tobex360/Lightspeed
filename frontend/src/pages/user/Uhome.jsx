@@ -34,7 +34,7 @@ function uhome() {
         <div className='col-md-14'>
           <div className=''>
             Create Order 
-            <Link><Button size='large' type='primary'>Create</Button></Link>
+            <Link to={'/ucreate'}><Button size='large' type='primary'>Create</Button></Link>
           </div>
         </div>
       </div>
