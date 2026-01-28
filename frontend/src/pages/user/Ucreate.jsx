@@ -96,12 +96,12 @@ function Ucreate() {
                                 <Input placeholder='Receiver Username' />
                             </Form.Item>
                             <Form.Item
-                                label="Driver (Optional)"
+                                label="Driver"
                                 name="driver"
-                                rules={[{ required: false }]} // Make it optional
+                                rules={[{ required: true, message: 'please select your driver' }]} // Make it optional???
                                 >
                                 <Select 
-                                    placeholder="Select a driver (or leave empty for auto-assign)" 
+                                    placeholder="Select a driver" 
                                     size="large"
                                     allowClear
                                 >
