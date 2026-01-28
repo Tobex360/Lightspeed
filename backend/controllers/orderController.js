@@ -31,3 +31,23 @@ exports.createOrder = async(req,res)=>{
         res.status(500).send({message: err.message})
     }
 }
+
+exports.getOutgoingOrders = async(req,res)=>{
+    try{
+        const {userId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).send({message: "Invalid user ID"});
+        }
+        
+        const orders = await Order.find({sender: userId})
+            .populate('receiver', 'username')
+            .populate('driver', 'username')
+            .sort({createdAt: -1});
+        
+        res.status(200).send({message:"Orders retrieved", orders: orders})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
