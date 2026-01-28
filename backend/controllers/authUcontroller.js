@@ -88,10 +88,27 @@ async function editUser(req,res) {
     
 }
 
+async function getUserByUsername(req,res) {
+    try{
+        const {username} = req.params;
+        const user = await User.findOne({username});
+        
+        if(!user) {
+            return res.status(404).send({message:'User not found'});
+        }
+        
+        res.send({user: {_id: user._id, username: user.username, firstname: user.firstname, lastname: user.lastname}});
+    }catch(err){
+        console.log(err);
+        res.status(400).send({message:'Error fetching user', error: err.message});
+    }
+}
+
 const AuthUcontroller = {
     registerUser,
     loginUser,
     editUser,
+    getUserByUsername,
 }
 
 module.exports = AuthUcontroller;

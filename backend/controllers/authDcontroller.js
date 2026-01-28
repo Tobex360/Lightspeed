@@ -91,12 +91,25 @@ async function editDriver(req,res) {
     }
     
 }
+async function getDrivers(req,res){
+    try{
+        const drivers = await Driver.find({
+            isOpen: true
+        }).select('firstname lastname vehicle phonenumber');
+        res.json({ drivers })
+    }catch(err){
+        console.log(err)
+        res.status(500).json({ message: 'Error fetching drivers', error: err.message });
+
+    }
+}
 
 
 const AuthDcontroller = {
     registerDriver,
     loginDriver,
     editDriver,
+    getDrivers,
 }
 
 module.exports = AuthDcontroller;

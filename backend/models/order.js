@@ -44,11 +44,20 @@ const orderSchema = new Schema({
 });
 
 // Generate tracking number before saving
-orderSchema.pre('save', function(next) {
+// orderSchema.pre('save', function(next) {
+//     if (!this.trackingNumber) {
+//         this.trackingNumber = 'LS' + Date.now() + Math.random().toString(36).substr(2, 9).toUpperCase();
+//     }
+//     next();
+// });
+
+orderSchema.pre('save', function () {
     if (!this.trackingNumber) {
-        this.trackingNumber = 'LS' + Date.now() + Math.random().toString(36).substr(2, 9).toUpperCase();
+        this.trackingNumber =
+            'LS' +
+            Date.now() +
+            Math.random().toString(36).substring(2, 9).toUpperCase();
     }
-    next();
 });
 
 const Order = mongoose.model("Order", orderSchema);

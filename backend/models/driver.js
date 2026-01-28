@@ -40,13 +40,12 @@ const driverSchema = new Schema({
 
 });
 
-driverSchema.pre("save",async function(next) {
+driverSchema.pre("save",async function() {
     const driver = this;
-    if(!driver.isModified('password')) return next();
+    if(!driver.isModified('password')) return;
     let salt = await bcrypt.genSalt(10);
     let hash = await bcrypt.hash(driver.password, salt);
-    driver.password = hash
-    
+    driver.password = hash;
 });
 
 driverSchema.methods.comparePassword = async function(password) {

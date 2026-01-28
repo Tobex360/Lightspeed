@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const authUroutes = require('./routes/authUroutes');
 const authDroutes = require('./routes/authDroutes');
+const orderRoutes = require('./routes/orderRoutes')
 const cors = require('cors');
 const path = require('path');
 
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use('/user',authUroutes);
 app.use('/driver',authDroutes);
+app.use('/order',orderRoutes);
 
 mongoose.connect(DB_URL).then((result)=>{
     console.log('succesfully connected to mongodb')
