@@ -13,6 +13,7 @@ function uhome() {
   const [userId, setUserId] = useState("")
   const [outgoingOrders, setOutgoingOrders] = useState([])
   const [incomingOrders, setIncomingOrders] = useState([])
+  const [receiverPendingOrders, setReceiverPendingOrders] = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(()=>{
@@ -31,6 +32,7 @@ function uhome() {
     if(userId){
       fetchOutgoingOrders();
       fetchIncomingOrders();
+      fetchReceiverPendingOrders();
     }
   }, [userId])
 
@@ -70,6 +72,56 @@ function uhome() {
     } catch (error) {
       console.log('Error fetching incoming orders:', error);
       message.error('Failed to fetch incoming orders');
+    }
+  }
+
+  const fetchReceiverPendingOrders = async () => {
+    try {
+      console.log('Fetching receiver pending orders for userId:', userId);
+      const response = await fetch(`http://localhost:7000/order/receiver-pending/${userId}`);
+      const data = await response.json();
+      console.log('Receiver Pending Response:', data);
+      if(data.orders){
+        setReceiverPendingOrders(data.orders);
+        console.log('Receiver pending orders loaded:', data.orders);
+      } else {
+        console.log('No pending orders in response');
+      }
+    } catch (error) {
+      console.log('Error fetching receiver pending orders:', error);
+      message.error('Failed to fetch pending orders');
+    }
+  }
+
+  const handleAcceptOrder = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:7000/order/accept-receiver/${orderId}`, {
+        method: 'PUT'
+      });
+      const data = await response.json();
+      if(data.order){
+        message.success('Order accepted');
+        fetchReceiverPendingOrders();
+      }
+    } catch (error) {
+      console.log('Error accepting order:', error);
+      message.error('Failed to accept order');
+    }
+  }
+
+  const handleDeclineOrder = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:7000/order/decline-receiver/${orderId}`, {
+        method: 'PUT'
+      });
+      const data = await response.json();
+      if(data.order){
+        message.success('Order declined');
+        fetchReceiverPendingOrders();
+      }
+    } catch (error) {
+      console.log('Error declining order:', error);
+      message.error('Failed to decline order');
     }
   }
 
@@ -161,6 +213,47 @@ function uhome() {
     }
   ];
 
+  const receiverPendingColumns = [
+    {
+      title: 'Package Name',
+      dataIndex: 'packageName',
+      key: 'packageName',
+    },
+    {
+      title: 'Sender',
+      dataIndex: ['sender', 'username'],
+      key: 'sender',
+    },
+    {
+      title: 'Size',
+      dataIndex: 'size',
+      key: 'size',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_, record) => (
+        <span>
+          <Button 
+            type='primary' 
+            size='small'
+            onClick={() => handleAcceptOrder(record._id)}
+            style={{marginRight: '10px'}}
+          >
+            Accept
+          </Button>
+          <Button 
+            danger 
+            size='small'
+            onClick={() => handleDeclineOrder(record._id)}
+          >
+            Decline
+          </Button>
+        </span>
+      ),
+    }
+  ];
+
   return (
     <><br />
     <div className='container'>
@@ -179,6 +272,20 @@ function uhome() {
         </div>
       </div>
     </div><br /><hr />
+
+    <div className='container'>
+      <div className='row'>
+        <div className='col-md-24'>
+          <h3>Pending Orders (Awaiting Your Response)</h3>
+          <Table 
+            columns={receiverPendingColumns} 
+            dataSource={receiverPendingOrders.map((order, index) => ({...order, key: order._id}))}
+            loading={loading}
+            pagination={{pageSize: 10}}
+          />
+        </div>
+      </div>
+    </div><br />
 
     <div className='container'>
       <div className='row'>

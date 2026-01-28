@@ -60,12 +60,135 @@ exports.getIncomingOrders = async(req,res)=>{
             return res.status(400).send({message: "Invalid user ID"});
         }
         
-        const orders = await Order.find({receiver: userId})
+        const orders = await Order.find({receiver: userId, status: 'accepted'})
             .populate('sender', 'username')
             .populate('driver', 'username')
             .sort({createdAt: -1});
         
         res.status(200).send({message:"Orders retrieved", orders: orders})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.getReceiverPendingOrders = async(req,res)=>{
+    try{
+        const {userId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).send({message: "Invalid user ID"});
+        }
+        
+        const orders = await Order.find({receiver: userId, status: 'pending'})
+            .populate('sender', 'username')
+            .sort({createdAt: -1});
+        
+        res.status(200).send({message:"Pending orders retrieved", orders: orders})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.getDriverPendingOrders = async(req,res)=>{
+    try{
+        const {userId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).send({message: "Invalid user ID"});
+        }
+        
+        const orders = await Order.find({driver: userId, status: 'driver-pending'})
+            .populate('sender', 'username')
+            .populate('receiver', 'username')
+            .sort({createdAt: -1});
+        
+        res.status(200).send({message:"Driver pending orders retrieved", orders: orders})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.acceptOrderByReceiver = async(req,res)=>{
+    try{
+        const {orderId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).send({message: "Invalid order ID"});
+        }
+        
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            {status: 'driver-pending'},
+            {new: true}
+        ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
+        
+        res.status(200).send({message:"Order accepted by receiver", order: order})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.declineOrderByReceiver = async(req,res)=>{
+    try{
+        const {orderId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).send({message: "Invalid order ID"});
+        }
+        
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            {status: 'cancelled'},
+            {new: true}
+        ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
+        
+        res.status(200).send({message:"Order declined by receiver", order: order})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.acceptOrderByDriver = async(req,res)=>{
+    try{
+        const {orderId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).send({message: "Invalid order ID"});
+        }
+        
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            {status: 'accepted'},
+            {new: true}
+        ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
+        
+        res.status(200).send({message:"Order accepted by driver", order: order})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.declineOrderByDriver = async(req,res)=>{
+    try{
+        const {orderId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).send({message: "Invalid order ID"});
+        }
+        
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            {status: 'cancelled', driver: null},
+            {new: true}
+        ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
+        
+        res.status(200).send({message:"Order declined by driver", order: order})
     }catch(err){
         console.log(err)
         res.status(500).send({message: err.message})
