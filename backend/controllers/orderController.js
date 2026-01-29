@@ -244,3 +244,51 @@ exports.updateOrderStatus = async(req,res)=>{
         res.status(500).send({message: err.message})
     }
 }
+
+exports.getCompletedOrders = async(req,res)=>{
+    try{
+        const {userId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).send({message: "Invalid user ID"});
+        }
+        
+        const orders = await Order.find({
+            $or: [
+                {sender: userId, status: 'completed'},
+                {receiver: userId, status: 'completed'},
+                {driver: userId, status: 'completed'}
+            ]
+        })
+            .populate('sender', 'username')
+            .populate('receiver', 'username')
+            .populate('driver', 'username')
+            .sort({createdAt: -1});
+        
+        res.status(200).send({message:"Completed orders retrieved", orders: orders})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.deleteOrder = async(req,res)=>{
+    try{
+        const {orderId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).send({message: "Invalid order ID"});
+        }
+        
+        const order = await Order.findByIdAndDelete(orderId);
+        
+        if (!order) {
+            return res.status(404).send({message: "Order not found"});
+        }
+        
+        res.status(200).send({message:"Order deleted successfully", order: order})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}

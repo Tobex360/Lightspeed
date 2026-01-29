@@ -11,9 +11,12 @@ function dhome() {
   const [driverId, setDriverId] = useState("")
   const [pendingOrders, setPendingOrders] = useState([])
   const [ongoingOrders, setOngoingOrders] = useState([])
+  const [completedOrders, setCompletedOrders] = useState([])
   const [loading, setLoading] = useState(false)
   const [ongoingLoading, setOngoingLoading] = useState(false)
+  const [completedLoading, setCompletedLoading] = useState(false)
   const [statusUpdating, setStatusUpdating] = useState({})
+  const [deleting, setDeleting] = useState({})
 
   useEffect(()=>{
     const driver = localStorage.getItem('driver');
@@ -35,6 +38,7 @@ function dhome() {
     if(driverId){
       fetchDriverPendingOrders();
       fetchDriverOngoingOrders();
+      fetchCompletedOrders();
     }
   }, [driverId])
 
@@ -127,12 +131,48 @@ function dhome() {
       if (data.order) {
         message.success('Order status updated');
         fetchDriverOngoingOrders();
+        fetchCompletedOrders();
       }
     } catch (error) {
       console.log('Error updating order status:', error);
       message.error('Failed to update order status');
     } finally {
       setStatusUpdating(prev => ({ ...prev, [orderId]: false }));
+    }
+  }
+
+  const fetchCompletedOrders = async () => {
+    setCompletedLoading(true);
+    try {
+      const response = await fetch(`http://localhost:7000/order/completed/${driverId}`);
+      const data = await response.json();
+      if (data.orders) {
+        setCompletedOrders(data.orders);
+      }
+    } catch (error) {
+      console.log('Error fetching completed orders:', error);
+      message.error('Failed to fetch completed orders');
+    } finally {
+      setCompletedLoading(false);
+    }
+  }
+
+  const handleDeleteOrder = async (orderId) => {
+    setDeleting(prev => ({ ...prev, [orderId]: true }));
+    try {
+      const response = await fetch(`http://localhost:7000/order/${orderId}`, {
+        method: 'DELETE'
+      });
+      const data = await response.json();
+      if (data.order) {
+        message.success('Order deleted successfully');
+        fetchCompletedOrders();
+      }
+    } catch (error) {
+      console.log('Error deleting order:', error);
+      message.error('Failed to delete order');
+    } finally {
+      setDeleting(prev => ({ ...prev, [orderId]: false }));
     }
   }
 
@@ -223,6 +263,43 @@ function dhome() {
     }
   ];
 
+  const completedColumns = [
+    {
+      title: 'Package Name',
+      dataIndex: 'packageName',
+      key: 'packageName',
+    },
+    {
+      title: 'Sender',
+      dataIndex: ['sender', 'username'],
+      key: 'sender',
+    },
+    {
+      title: 'Receiver',
+      dataIndex: ['receiver', 'username'],
+      key: 'receiver',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_, record) => (
+        <Button
+          danger
+          size='small'
+          loading={deleting[record._id]}
+          onClick={() => handleDeleteOrder(record._id)}
+        >
+          Delete
+        </Button>
+      ),
+    }
+  ];
+
   return (
     <><br />
     <div className='container'>
@@ -253,6 +330,20 @@ function dhome() {
             columns={ongoingColumns}
             dataSource={ongoingOrders.map((order) => ({ ...order, key: order._id }))}
             loading={ongoingLoading}
+            pagination={{ pageSize: 10 }}
+          />
+        </div>
+      </div>
+    </div><br />
+
+    <div className='container'>
+      <div className='row'>
+        <div className='col-md-24'>
+          <h3>Completed Orders</h3>
+          <Table
+            columns={completedColumns}
+            dataSource={completedOrders.map((order) => ({ ...order, key: order._id }))}
+            loading={completedLoading}
             pagination={{ pageSize: 10 }}
           />
         </div>
