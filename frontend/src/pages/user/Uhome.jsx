@@ -266,8 +266,7 @@ function uhome() {
       <div className='row'>
         <div className='col-md-14'>
           <div className=''>
-            Create Order 
-            <Link to={'/ucreate'}><Button size='large' type='primary'>Create</Button></Link>
+            <Link to={'/ucreate'}><Button size='large' type='primary'>Create Order</Button></Link>
           </div>
         </div>
       </div>

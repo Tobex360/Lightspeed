@@ -32,7 +32,7 @@ const orderSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'accepted', 'in-transit', 'completed', 'cancelled'],
+        enum: ['pending', 'driver-pending', 'accepted', 'in-transit', 'completed', 'cancelled'],
         default: 'pending'
     },
     trackingNumber: {

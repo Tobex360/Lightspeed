@@ -40,7 +40,7 @@ exports.getOutgoingOrders = async(req,res)=>{
             return res.status(400).send({message: "Invalid user ID"});
         }
         
-        const orders = await Order.find({sender: userId})
+        const orders = await Order.find({sender: userId, })
             .populate('receiver', 'username')
             .populate('driver', 'username')
             .sort({createdAt: -1});
@@ -60,7 +60,7 @@ exports.getIncomingOrders = async(req,res)=>{
             return res.status(400).send({message: "Invalid user ID"});
         }
         
-        const orders = await Order.find({receiver: userId, status: 'accepted'})
+        const orders = await Order.find({receiver: userId, status: {$in: ['accepted', 'in-transit', 'completed', 'driver-pending']}})
             .populate('sender', 'username')
             .populate('driver', 'username')
             .sort({createdAt: -1});
@@ -189,6 +189,56 @@ exports.declineOrderByDriver = async(req,res)=>{
         ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
         
         res.status(200).send({message:"Order declined by driver", order: order})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.getDriverOngoingOrders = async(req,res)=>{
+    try{
+        const {userId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).send({message: "Invalid user ID"});
+        }
+        
+        const orders = await Order.find({
+            driver: userId, 
+            status: {$in: ['accepted', 'in-transit', 'completed']}
+        })
+            .populate('sender', 'username')
+            .populate('receiver', 'username')
+            .sort({createdAt: -1});
+        
+        res.status(200).send({message:"Driver ongoing orders retrieved", orders: orders})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.updateOrderStatus = async(req,res)=>{
+    try{
+        const {orderId} = req.params;
+        const {status} = req.body;
+        
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).send({message: "Invalid order ID"});
+        }
+        
+        const validStatuses = ['accepted', 'in-transit', 'completed'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).send({message: "Invalid status"});
+        }
+        
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            {status: status},
+            {new: true}
+        ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
+        
+        res.status(200).send({message:"Order status updated", order: order})
     }catch(err){
         console.log(err)
         res.status(500).send({message: err.message})

@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Input, Button, Form, message, Table, Tag } from 'antd'
+import { Input, Button, Form, message, Table, Tag, Select } from 'antd'
 
 function dhome() {
   const [username, setUsername] = useState("")
@@ -10,7 +10,10 @@ function dhome() {
   const [lastname, setLastname] = useState("")
   const [driverId, setDriverId] = useState("")
   const [pendingOrders, setPendingOrders] = useState([])
+  const [ongoingOrders, setOngoingOrders] = useState([])
   const [loading, setLoading] = useState(false)
+  const [ongoingLoading, setOngoingLoading] = useState(false)
+  const [statusUpdating, setStatusUpdating] = useState({})
 
   useEffect(()=>{
     const driver = localStorage.getItem('driver');
@@ -31,6 +34,7 @@ function dhome() {
   useEffect(()=>{
     if(driverId){
       fetchDriverPendingOrders();
+      fetchDriverOngoingOrders();
     }
   }, [driverId])
 
@@ -64,6 +68,7 @@ function dhome() {
       if(data.order){
         message.success('Order accepted');
         fetchDriverPendingOrders();
+        fetchDriverOngoingOrders();
       }
     } catch (error) {
       console.log('Error accepting order:', error);
@@ -84,6 +89,50 @@ function dhome() {
     } catch (error) {
       console.log('Error declining order:', error);
       message.error('Failed to decline order');
+    }
+  }
+
+  const fetchDriverOngoingOrders = async () => {
+    setOngoingLoading(true);
+    try {
+      console.log('Fetching driver ongoing orders for driverId:', driverId);
+      const response = await fetch(`http://localhost:7000/order/driver-ongoing/${driverId}`);
+      const data = await response.json();
+      console.log('Driver Ongoing Response:', data);
+      if (data.orders) {
+        setOngoingOrders(data.orders);
+        console.log('Driver ongoing orders loaded:', data.orders);
+      } else {
+        console.log('No ongoing orders in response');
+      }
+    } catch (error) {
+      console.log('Error fetching driver ongoing orders:', error);
+      message.error('Failed to fetch ongoing orders');
+    } finally {
+      setOngoingLoading(false);
+    }
+  }
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    setStatusUpdating(prev => ({ ...prev, [orderId]: true }));
+    try {
+      const response = await fetch(`http://localhost:7000/order/update-status/${orderId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const data = await response.json();
+      if (data.order) {
+        message.success('Order status updated');
+        fetchDriverOngoingOrders();
+      }
+    } catch (error) {
+      console.log('Error updating order status:', error);
+      message.error('Failed to update order status');
+    } finally {
+      setStatusUpdating(prev => ({ ...prev, [orderId]: false }));
     }
   }
 
@@ -133,6 +182,47 @@ function dhome() {
     }
   ];
 
+  const ongoingColumns = [
+    {
+      title: 'Package Name',
+      dataIndex: 'packageName',
+      key: 'packageName',
+    },
+    {
+      title: 'Size',
+      dataIndex: 'size',
+      key: 'size',
+    },
+    {
+      title: 'Sender',
+      dataIndex: ['sender', 'username'],
+      key: 'sender',
+    },
+    {
+      title: 'Receiver',
+      dataIndex: ['receiver', 'username'],
+      key: 'receiver',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status, record) => (
+        <Select
+          value={status}
+          style={{ width: '120px' }}
+          onChange={(newStatus) => handleStatusChange(record._id, newStatus)}
+          disabled={statusUpdating[record._id]}
+          options={[
+            { label: 'Accepted', value: 'accepted' },
+            { label: 'In-Transit', value: 'in-transit' },
+            { label: 'Completed', value: 'completed' }
+          ]}
+        />
+      ),
+    }
+  ];
+
   return (
     <><br />
     <div className='container'>
@@ -150,6 +240,20 @@ function dhome() {
             dataSource={pendingOrders.map((order, index) => ({...order, key: order._id}))}
             loading={loading}
             pagination={{pageSize: 10}}
+          />
+        </div>
+      </div>
+    </div><br />
+    
+    <div className='container'>
+      <div className='row'>
+        <div className='col-md-24'>
+          <h3>Ongoing Orders</h3>
+          <Table
+            columns={ongoingColumns}
+            dataSource={ongoingOrders.map((order) => ({ ...order, key: order._id }))}
+            loading={ongoingLoading}
+            pagination={{ pageSize: 10 }}
           />
         </div>
       </div>
