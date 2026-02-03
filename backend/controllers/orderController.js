@@ -104,8 +104,9 @@ exports.getDriverPendingOrders = async(req,res)=>{
         }
         
         const orders = await Order.find({driver: userId, status: 'driver-pending'})
-            .populate('sender', 'username')
-            .populate('receiver', 'username')
+            .populate('sender','username firstname lastname email address phonenumber')
+            .populate('receiver','username firstname lastname email address phonenumber')
+            .populate('driver', 'username firstname lastname email vehicle phonenumber')
             .sort({createdAt: -1});
         
         res.status(200).send({message:"Driver pending orders retrieved", orders: orders})
@@ -211,8 +212,9 @@ exports.getDriverOngoingOrders = async(req,res)=>{
             driver: userId, 
             status: {$in: ['accepted', 'in-transit', 'completed']}
         })
-            .populate('sender', 'username')
-            .populate('receiver', 'username')
+            .populate('sender','username firstname lastname email address phonenumber')
+            .populate('receiver','username firstname lastname email address phonenumber')
+            .populate('driver', 'username firstname lastname email vehicle phonenumber')
             .sort({createdAt: -1});
         
         res.status(200).send({message:"Driver ongoing orders retrieved", orders: orders})
