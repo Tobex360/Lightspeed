@@ -2,7 +2,9 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Input, Button, Form, message, Table, Tag } from 'antd'
+import { Input, Button, Form, message, Table, Tag, Modal, Divider, Descriptions} from 'antd'
+import { EyeOutlined } from '@ant-design/icons'
+
 
 
 
@@ -18,6 +20,11 @@ function uhome() {
   const [loading, setLoading] = useState(false)
   const [completedLoading, setCompletedLoading] = useState(false)
   const [deleting, setDeleting] = useState({})
+
+  // modal states
+
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState(null)
 
   useEffect(()=>{
     const user = localStorage.getItem('user');
@@ -164,6 +171,18 @@ function uhome() {
     }
   }
 
+  // View order details
+
+  const handleViewDetails = (order)=>{
+    setSelectedOrder(order);
+    setIsModalVisible(true);
+  }
+
+  const handleModalClose = ()=>{
+    setIsModalVisible(false);
+    setSelectedOrder(null);
+  }
+
   const outgoingColumns = [
     {
       title: 'Package Name',
@@ -205,6 +224,19 @@ function uhome() {
       title: 'Tracking Number',
       dataIndex: 'trackingNumber',
       key: 'trackingNumber',
+    },
+    {
+      title:'Action',
+      key: 'action',
+      render: (_, record) =>(
+        <Button
+        type='link'
+        icon={<EyeOutlined />}
+        onClick={()=> handleViewDetails(record)}
+        >
+          View Details
+        </Button>
+      )
     }
   ];
 
@@ -249,6 +281,19 @@ function uhome() {
       title: 'Tracking Number',
       dataIndex: 'trackingNumber',
       key: 'trackingNumber',
+    },
+    {
+      title:'Action',
+      key: 'action',
+      render: (_, record) =>(
+        <Button
+        type='link'
+        icon={<EyeOutlined />}
+        onClick={()=> handleViewDetails(record)}
+        >
+          View Details
+        </Button>
+      )
     }
   ];
 
@@ -287,6 +332,14 @@ function uhome() {
             onClick={() => handleDeclineOrder(record._id)}
           >
             Decline
+          </Button>
+          <Button
+            type='link'
+            size='small'
+            icon={<EyeOutlined />}
+            onClick={()=> handleViewDetails(record)}
+            >
+              View Details
           </Button>
         </span>
       ),
@@ -333,6 +386,19 @@ function uhome() {
           Delete
         </Button>
       ),
+    },
+    {
+      title:'View Details',
+      key: 'action',
+      render: (_, record) =>(
+        <Button
+        type='link'
+        icon={<EyeOutlined />}
+        onClick={()=> handleViewDetails(record)}
+        >
+          View Details
+        </Button>
+      )
     }
   ];
 
@@ -409,6 +475,108 @@ function uhome() {
         </div>
       </div>
     </div><br />
+    <Modal
+    title="Order Details"
+    open={isModalVisible}
+    onCancel={handleModalClose}
+    footer={[
+      <Button key="close" type='primary' onClick={handleModalClose}>
+        Close
+      </Button>
+    ]}
+    width={700}
+    >
+      {selectedOrder && (
+        <>
+          <Divider titlePlacement='left'>Package Information</Divider>
+          <Descriptions bordered column={2}>
+            <Descriptions.Item label="Package Name" >
+              {selectedOrder.packageName}
+            </Descriptions.Item>
+            <Descriptions.Item label="Size">
+              {selectedOrder.size}
+            </Descriptions.Item>
+            <Descriptions.Item label="Description" span={2}>
+              {selectedOrder.description || 'No description provided'}
+            </Descriptions.Item>
+            <Descriptions.Item label="Tracking Number" span={2}>
+              <Tag color="blue">{selectedOrder.trackingNumber}</Tag>
+            </Descriptions.Item>
+          </Descriptions>
+
+          <Divider titlePlacement='left'>Sender Information</Divider>
+          <Descriptions bordered column={2}>
+            <Descriptions.Item label="Name" span={2}>
+              {selectedOrder.sender?.firstname} {selectedOrder.sender?.lastname}
+            </Descriptions.Item>
+            <Descriptions.Item label="Username">
+              {selectedOrder.sender?.username}
+            </Descriptions.Item>
+            <Descriptions.Item label="Phone Number">
+              {selectedOrder.sender?.phonenumber}
+            </Descriptions.Item>
+            <Descriptions.Item label="Email" span={2}>
+              {selectedOrder.sender?.email}
+            </Descriptions.Item>
+            <Descriptions.Item label="Address" span={2}>
+              {selectedOrder.sender?.address}
+            </Descriptions.Item>
+          </Descriptions>
+
+
+          <Divider titlePlacement='left'>Receiver Information</Divider>
+          <Descriptions bordered column={2}>
+            <Descriptions.Item label="Name" span={2}>
+              {selectedOrder.receiver?.firstname} {selectedOrder.receiver?.lastname}
+            </Descriptions.Item>
+            <Descriptions.Item label="Username">
+              {selectedOrder.receiver?.username}
+            </Descriptions.Item>
+            <Descriptions.Item label="Phone Number">
+              {selectedOrder.receiver?.phonenumber}
+            </Descriptions.Item>
+            <Descriptions.Item label="Email" span={2}>
+              {selectedOrder.receiver?.email}
+            </Descriptions.Item>
+            <Descriptions.Item label="Address" span={2}>
+              {selectedOrder.receiver?.address}
+            </Descriptions.Item>
+          </Descriptions>
+
+
+          <Divider titlePlacement='left'>Driver Information</Divider>
+          <Descriptions bordered column={2}>
+            <Descriptions.Item label="Name" span={2}>
+              {selectedOrder.driver?.firstname} {selectedOrder.driver?.lastname}
+            </Descriptions.Item>
+            <Descriptions.Item label="Username">
+              {selectedOrder.driver?.username}
+            </Descriptions.Item>
+            <Descriptions.Item label="Phone Number">
+              {selectedOrder.driver?.phonenumber || 'N/A'}
+            </Descriptions.Item>
+            <Descriptions.Item label="Email" span={2}>
+              {selectedOrder.driver?.email || 'N/A'}
+            </Descriptions.Item>
+            <Descriptions.Item label="Vehicle" span={2}>
+              {selectedOrder.driver?.vehicle || 'N/A'}
+            </Descriptions.Item>
+          </Descriptions>
+
+
+          <Divider titlePlacement='left'>Timeline</Divider>
+          <Descriptions bordered column={1}>
+            <Descriptions.Item label="Created At">
+              {new Date(selectedOrder.createdAt).toLocaleString()}
+            </Descriptions.Item>
+            <Descriptions.Item label="Updated At">
+              {new Date(selectedOrder.updatedAt).toLocaleString()}
+            </Descriptions.Item>
+          </Descriptions>
+        </>
+      )}
+
+    </Modal>
     </>
   )
 }

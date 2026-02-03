@@ -41,8 +41,9 @@ exports.getOutgoingOrders = async(req,res)=>{
         }
         
         const orders = await Order.find({sender: userId, })
-            .populate('receiver', 'username')
-            .populate('driver', 'username')
+            .populate('sender','username firstname lastname email address phonenumber')
+            .populate('receiver','username firstname lastname email address phonenumber')
+            .populate('driver', 'username firstname lastname email vehicle phonenumber')
             .sort({createdAt: -1});
         
         res.status(200).send({message:"Orders retrieved", orders: orders})
@@ -61,8 +62,9 @@ exports.getIncomingOrders = async(req,res)=>{
         }
         
         const orders = await Order.find({receiver: userId, status: {$in: ['accepted', 'in-transit', 'completed', 'driver-pending']}})
-            .populate('sender', 'username')
-            .populate('driver', 'username')
+            .populate('sender','username firstname lastname email address phonenumber')
+            .populate('receiver', 'username firstname lastname email address phonenumber')
+            .populate('driver', 'username firstname lastname email vehicle phonenumber')
             .sort({createdAt: -1});
         
         res.status(200).send({message:"Orders retrieved", orders: orders})
@@ -81,7 +83,9 @@ exports.getReceiverPendingOrders = async(req,res)=>{
         }
         
         const orders = await Order.find({receiver: userId, status: 'pending'})
-            .populate('sender', 'username')
+            .populate('sender','username firstname lastname email address phonenumber')
+            .populate('receiver','username firstname lastname email address phonenumber')
+            .populate('driver', 'username firstname lastname email vehicle phonenumber')
             .sort({createdAt: -1});
         
         res.status(200).send({message:"Pending orders retrieved", orders: orders})
@@ -260,9 +264,9 @@ exports.getCompletedOrders = async(req,res)=>{
                 {driver: userId, status: 'completed'}
             ]
         })
-            .populate('sender', 'username')
-            .populate('receiver', 'username')
-            .populate('driver', 'username')
+            .populate('sender','username firstname lastname email address phonenumber')
+            .populate('receiver','username firstname lastname email address phonenumber')
+            .populate('driver', 'username firstname lastname email vehicle phonenumber')
             .sort({createdAt: -1});
         
         res.status(200).send({message:"Completed orders retrieved", orders: orders})
