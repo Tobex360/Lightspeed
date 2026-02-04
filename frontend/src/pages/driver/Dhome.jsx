@@ -449,7 +449,7 @@ function dhome() {
                   {selectedOrder.sender?.email}
                 </Descriptions.Item>
                 <Descriptions.Item label="Address" span={2}>
-                  {selectedOrder.sender?.address}
+                  {selectedOrder.sender?.address?.street}, {selectedOrder.sender?.address?.city}, {selectedOrder.sender?.address?.state}
                 </Descriptions.Item>
               </Descriptions>
     
@@ -469,7 +469,7 @@ function dhome() {
                   {selectedOrder.receiver?.email}
                 </Descriptions.Item>
                 <Descriptions.Item label="Address" span={2}>
-                  {selectedOrder.receiver?.address}
+                  {selectedOrder.receiver?.address?.street}, {selectedOrder.receiver?.address?.city}, {selectedOrder.receiver?.address?.state}
                 </Descriptions.Item>
               </Descriptions>
     
