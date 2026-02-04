@@ -40,7 +40,7 @@ exports.getOutgoingOrders = async(req,res)=>{
             return res.status(400).send({message: "Invalid user ID"});
         }
         
-        const orders = await Order.find({sender: userId, })
+        const orders = await Order.find({sender: userId, status: {$in: ['accepted', 'in-transit', 'driver-pending', 'pending']} })
             .populate('sender','username firstname lastname email address phonenumber')
             .populate('receiver','username firstname lastname email address phonenumber')
             .populate('driver', 'username firstname lastname email vehicle phonenumber')
@@ -210,7 +210,7 @@ exports.getDriverOngoingOrders = async(req,res)=>{
         
         const orders = await Order.find({
             driver: userId, 
-            status: {$in: ['accepted', 'in-transit', 'completed']}
+            status: {$in: ['accepted', 'in-transit']}
         })
             .populate('sender','username firstname lastname email address phonenumber')
             .populate('receiver','username firstname lastname email address phonenumber')
@@ -261,9 +261,9 @@ exports.getCompletedOrders = async(req,res)=>{
         
         const orders = await Order.find({
             $or: [
-                {sender: userId, status: 'completed'},
-                {receiver: userId, status: 'completed'},
-                {driver: userId, status: 'completed'}
+                {sender: userId, status: {$in: ['cancelled', 'completed']}},
+                {receiver: userId, status: {$in: ['cancelled', 'completed']}},
+                {driver: userId, status: {$in: ['cancelled', 'completed']}}
             ]
         })
             .populate('sender','username firstname lastname email address phonenumber')
