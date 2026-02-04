@@ -27,7 +27,9 @@ function Dsetting() {
       lastname: parsedUser.lastname || '',
       username: parsedUser.username || '',
       email: parsedUser.email || '',
-      address: parsedUser.address || '',
+      street: parsedUser.address.street || '',
+      city: parsedUser.address.city || '',
+      state: parsedUser.address.state || '',
       phonenumber: parsedUser.phonenumber || '',
       vehicle: parsedUser.vehicle || '',
     })
@@ -41,15 +43,31 @@ function Dsetting() {
 
     setLoading(true)
     try {
+      
+      const payload = {
+        firstname: values.firstname,
+        lastname: values.lastname,
+        username: values.username,
+        email: values.email,
+        phonenumber: values.phonenumber,
+        address: {
+          street: values.street,
+          city: values.city,
+          state: values.state
+        },
+        vehicle: values.vehicle
+      }
+
+
       const response = await axios.put(
         `http://localhost:7000/driver/edit/${userData.userid}`,
-        values
+        payload
       )
 
       // Update localStorage
       const updatedUser = {
         ...userData,
-        ...values
+        ...payload,
       }
       localStorage.setItem('driver', JSON.stringify(updatedUser))
       setUserData(updatedUser)
@@ -119,11 +137,25 @@ function Dsetting() {
                   </Form.Item>
 
                   <Form.Item
-                    label="Address"
-                    name="address"
-                    rules={[{ required: true, message: 'Please enter your address' }]}
+                    label="Street"
+                    name="street"
+                    rules={[{ required: true, message: 'Please enter your Street' }]}
                   >
-                    <Input placeholder='Address' />
+                    <Input placeholder='Street' />
+                  </Form.Item>
+                  <Form.Item
+                    label="City"
+                    name="city"
+                    rules={[{ required: true, message: 'Please enter your City' }]}
+                  >
+                    <Input placeholder='City' />
+                  </Form.Item>
+                  <Form.Item
+                    label="State"
+                    name="state"
+                    rules={[{ required: true, message: 'Please enter your State' }]}
+                  >
+                    <Input placeholder='State' />
                   </Form.Item>
 
                   <Form.Item

@@ -27,42 +27,60 @@ function Usetting() {
       lastname: parsedUser.lastname || '',
       username: parsedUser.username || '',
       email: parsedUser.email || '',
-      address: parsedUser.address || '',
+      street: parsedUser.address?.street || '',
+      city: parsedUser.address?.city || '',
+      state: parsedUser.address?.state || '',
       phonenumber: parsedUser.phonenumber || '',
     })
   }, [form, navigate])
 
-  const handleSubmit = async (values) => {
-    if (!userData || !userData.userid) {
-      message.error('User information not found')
-      return
-    }
 
-    setLoading(true)
-    try {
-      const response = await axios.put(
-        `http://localhost:7000/user/edit/${userData.userid}`,
-        values
-      )
 
-      // Update localStorage
-      const updatedUser = {
-        ...userData,
-        ...values
-      }
-      localStorage.setItem('user', JSON.stringify(updatedUser))
-      setUserData(updatedUser)
-      
-      message.success('Profile updated successfully!')
-    } catch (err) {
-      console.error('Error:', err)
-      message.error(
-        err.response?.data?.message || 'Failed to update profile'
-      )
-    } finally {
-      setLoading(false)
-    }
+const handleSubmit = async (values) => {
+  if (!userData || !userData.userid) {
+    message.error('User information not found')
+    return
   }
+
+  setLoading(true)
+  try {
+    const payload = {
+      firstname: values.firstname,
+      lastname: values.lastname,
+      username: values.username,
+      email: values.email,
+      phonenumber: values.phonenumber,
+      address: {
+        street: values.street,
+        city: values.city,
+        state: values.state,
+      },
+    }
+
+    const response = await axios.put(
+      `http://localhost:7000/user/edit/${userData.userid}`,
+      payload
+    )
+
+    const updatedUser = {
+      ...userData,
+      ...payload,
+    }
+
+    localStorage.setItem('user', JSON.stringify(updatedUser))
+    setUserData(updatedUser)
+
+    message.success('Profile updated successfully!')
+  } catch (err) {
+    console.error(err)
+    message.error(
+      err.response?.data?.message || 'Failed to update profile'
+    )
+  } finally {
+    setLoading(false)
+  }
+}
+
 
   if (!userData) {
     return <Spin size="large" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }} />
@@ -118,11 +136,25 @@ function Usetting() {
                   </Form.Item>
 
                   <Form.Item
-                    label="Address"
-                    name="address"
-                    rules={[{ required: true, message: 'Please enter your address' }]}
+                    label="Street"
+                    name="street"
+                    rules={[{ required: true, message: 'Please enter your Street' }]}
                   >
-                    <Input placeholder='Address' />
+                    <Input placeholder='Street' />
+                  </Form.Item>
+                  <Form.Item
+                    label="City"
+                    name="city"
+                    rules={[{ required: true, message: 'Please enter your city' }]}
+                  >
+                    <Input placeholder='City' />
+                  </Form.Item>
+                  <Form.Item
+                    label="State"
+                    name="state"
+                    rules={[{ required: true, message: 'Please enter your State' }]}
+                  >
+                    <Input placeholder='State' />
                   </Form.Item>
 
                   <Form.Item

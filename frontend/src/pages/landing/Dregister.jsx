@@ -8,15 +8,6 @@ import { useState } from 'react'
 
 function Dregister() {
 
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [phonenumber, setPhonenumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [password, setPassword] = useState("");
-  const [vehicle, setVehicle] = useState("");
-
   const navigate = useNavigate();
 
   const handleSubmit = async(values)=>{
@@ -24,22 +15,29 @@ function Dregister() {
 
     try{
       const data = {
-        firstname,
-        lastname,
-        username,
-        email,
-        address,
-        phonenumber,
-        password,
-        vehicle
+        firstname: values.firstname,
+        lastname: values.lastname,
+        username: values.username,
+        email: values.email,
+        address: {
+          street: values.street,
+          city: values.city,
+          state: values.state
+        },
+        phonenumber: values.phonenumber,
+        password: values.password,
+        vehicle: values.vehicle
 
-      }
+      };
+
+
       const response = await AuthDservices.registerDriver(data);
       console.log(response.data);
       message.success("you are successfully Registered");
       navigate('/dlogin');
     }catch(err){
       console.log(err);
+      message.error("registration failed");
     }
   };
 
@@ -61,80 +59,70 @@ function Dregister() {
             rules={[{ required: true, message: 'Please input your Firstname!' }]}
           >
             <Input
-              placeholder='Firstname'
-              value={firstname}
-              onChange={(e)=> setFirstname(e.target.value)}
-            />
+              placeholder='Firstname' />
           </Form.Item>
             <Form.Item
             name="lastname"
             rules={[{ required: true, message: 'Please input your Lastname!' }]}
           >
             <Input
-              placeholder='Lastname'
-              value={lastname}
-              onChange={(e)=>setLastname(e.target.value)}
-            />
+              placeholder='Lastname' />
           </Form.Item>
             <Form.Item
             name="username"
             rules={[{ required: true, message: 'Please input your Username!' }]}
           >
             <Input
-              placeholder='Username'
-              value={username}
-              onChange={(e)=>setUsername(e.target.value)}
-            />
+              placeholder='Username' />
           </Form.Item>
             <Form.Item
             name="email"
-            rules={[{ required: true, message: 'Please input your Email!' }]}
+            rules={[{ required: true, message: 'Please input your Email!'}]}
           >
             <Input
-              placeholder='Email'
-              value={email}
-              onChange={(e)=>setEmail(e.target.value)}
-            />
+              placeholder='Email' />
           </Form.Item>
             <Form.Item
             name="phonenumber"
             rules={[{ required: true, message: 'Please input your Phone Number!' }]}
           >
             <Input
-              placeholder='Phone Number'
-              value={phonenumber}
-              onChange={(e)=>setPhonenumber(e.target.value)}
-            />
+              placeholder='Phone Number' />
           </Form.Item>
             <Form.Item
-            name="address"
-            rules={[{ required: true, message: 'Please input your Address!' }]}
+            name="street"
+            rules={[{ required: true, message: 'Please input your Street!' }]}
           >
             <Input
-              placeholder='Address'
-              value={address}
-              onChange={(e)=>setAddress(e.target.value)}
-            />
+              placeholder='Street' />
+          </Form.Item>
+            <Form.Item
+            name="city"
+            rules={[{ required: true, message: 'Please input your City!' }]}
+          >
+            <Input
+              placeholder='City' />
+          </Form.Item>
+            <Form.Item
+            name="state"
+            rules={[{ required: true, message: 'Please input your State!' }]}
+          >
+            <Input
+              placeholder='State' />
           </Form.Item>
             <Form.Item
             name="vehicle"
             rules={[{ required: true, message: 'Please input your Vehicle!' }]}
           >
             <Input
-              placeholder='vehicle'
-              value={vehicle}
-              onChange={(e)=>setVehicle(e.target.value)}
-            />
+              placeholder='vehicle' />
           </Form.Item>
           <Form.Item
             name="password"
             rules={[{ required: true, message: 'Please input your password!' }]}
           >
             <Input.Password
-              placeholder='Password'
-              value={password}
-              onChange={(e)=>setPassword(e.target.value)}
-            />
+              placeholder='Password' />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" block>

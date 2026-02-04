@@ -20,7 +20,9 @@ const driverSchema = new Schema({
         type:String
     },
     address:{
-        type:String
+        street: String,
+        city: String,
+        state: String
     },
     phonenumber:{
         type:String
