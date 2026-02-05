@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Input, Button, Form, message, Spin } from 'antd'
+import { Input, Button, Form, message, Spin, Select } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
@@ -32,6 +32,7 @@ function Dsetting() {
       state: parsedUser.address.state || '',
       phonenumber: parsedUser.phonenumber || '',
       vehicle: parsedUser.vehicle || '',
+      availability: parsedUser.isOpen ? 'yes' : 'no',
     })
   }, [form, navigate])
 
@@ -55,7 +56,8 @@ function Dsetting() {
           city: values.city,
           state: values.state
         },
-        vehicle: values.vehicle
+        vehicle: values.vehicle,
+        isOpen: values.availability === 'yes'
       }
 
 
@@ -68,6 +70,7 @@ function Dsetting() {
       const updatedUser = {
         ...userData,
         ...payload,
+        isOpen: payload.isOpen
       }
       localStorage.setItem('driver', JSON.stringify(updatedUser))
       setUserData(updatedUser)
@@ -171,6 +174,17 @@ function Dsetting() {
                     rules={[{ required: true, message: 'Please enter your vehicle' }]}
                   >
                     <Input placeholder='vehicle' />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Availability"
+                    name="availability"
+                    rules={[{ required: true, message: 'Please select your availability' }]}
+                  >
+                    <Select placeholder="Select availability">
+                      <Select.Option value="yes">Yes (Available for Orders)</Select.Option>
+                      <Select.Option value="no">No (Not Available)</Select.Option>
+                    </Select>
                   </Form.Item>
 
                   <Form.Item>

@@ -9,6 +9,7 @@ import { EyeOutlined } from '@ant-design/icons'
 function dhome() {
   const [username, setUsername] = useState("")
   const [firstname, setFirstname] = useState("")
+  const [available, setAvailable] = useState(false)
   const [lastname, setLastname] = useState("")
   const [driverId, setDriverId] = useState("")
   const [pendingOrders, setPendingOrders] = useState([])
@@ -35,6 +36,7 @@ function dhome() {
       setFirstname(driverData.firstname);
       setUsername(driverData.username);
       setLastname(driverData.lastname);
+      setAvailable(driverData.isOpen)
       const id = driverData.driverid || driverData._id || driverData.userid;
       console.log('Setting driver ID to:', id);
       setDriverId(id || '');
@@ -370,7 +372,7 @@ function dhome() {
     <><br />
     <div className='container'>
       <div className='row justify-content-center'>
-        <h2>Welcome, {firstname}</h2>
+        <h2>Welcome, {firstname} {" "}{lastname}{" "}{available?(<Tag color="green">Available</Tag>):(<Tag color="red">Not Available</Tag>)}</h2>
       </div>
     </div><br /><hr />
 

@@ -116,7 +116,8 @@ async function editDriver(req, res) {
             email,
             phonenumber,
             vehicle,
-            address
+            address,
+            isOpen
         } = req.body;
 
         const updateData = {};
@@ -127,6 +128,7 @@ async function editDriver(req, res) {
         if (email) updateData.email = email;
         if (phonenumber) updateData.phonenumber = phonenumber;
         if (vehicle) updateData.vehicle = vehicle;
+        if (isOpen !== undefined) updateData.isOpen = isOpen;
 
 
         if (address) {
