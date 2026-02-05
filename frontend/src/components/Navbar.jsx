@@ -4,6 +4,8 @@ import { UserOutlined } from '@ant-design/icons'
 
 import Logo from '../assets/Logo.svg'
 import Logo2 from '../assets/Logo 2.svg'
+import Logo3 from '../assets/Logo 3.svg'
+import Logo4 from '../assets/Logo 4.svg'
 import './navbar.css'
 
 function Navbar() {
@@ -66,7 +68,7 @@ function Navbar() {
     <>
       <nav className="navbar navbar-expand-lg fil">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/"><img src={Logo2} alt="" /></Link>
+          <Link className="navbar-brand" to="/"><img src={Logo4} alt="" /></Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -76,10 +78,10 @@ function Navbar() {
               {userType === null && (
                 <>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/ulogin">User Login</Link>
+                    <Link className="nav-link" to="/ulogin"><UserOutlined /> User Login</Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/dlogin">Driver Login</Link>
+                    <Link className="nav-link" to="/dlogin"><UserOutlined /> Driver Login</Link>
                   </li>
                 </>
               )}
@@ -91,7 +93,7 @@ function Navbar() {
                     <Link className="nav-link" to="/uhome">Home</Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/usetting">Setting</Link>
+                    <Link className="nav-link" to="/usetting">Settings</Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/uhelp">Contact/Help</Link>
@@ -114,7 +116,7 @@ function Navbar() {
                     <Link className="nav-link" to="/dhome">Home</Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/dsetting">Setting</Link>
+                    <Link className="nav-link" to="/dsetting">Settings</Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/dhelp">Contact/Help</Link>

@@ -31,7 +31,7 @@ function Landing() {
             <div className='col-md-5'>
               <div className='registration-card'>
                 <img src={driver} alt="driver" className='card-image' />
-                <h3 className='card-title'>Become a driver</h3><br />
+                <h3 className='card-title'>Become a Driver</h3><br />
                 <Link to ='/dregister' class="register-btn" onclick="alert('Redirecting to driver Registration...')">Register</Link>
               </div>
             </div>
