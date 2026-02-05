@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { UserOutlined } from '@ant-design/icons'
 
 import Logo from '../assets/Logo.svg'
+import Logo2 from '../assets/Logo 2.svg'
 import './navbar.css'
 
 function Navbar() {
@@ -65,7 +66,7 @@ function Navbar() {
     <>
       <nav className="navbar navbar-expand-lg fil">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/"><img src={Logo} alt="" /></Link>
+          <Link className="navbar-brand" to="/"><img src={Logo2} alt="" /></Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
