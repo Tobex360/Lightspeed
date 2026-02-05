@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Landing from './pages/landing/Landing'
 import Navbar from './components/Navbar'
 import Footer from './components/footer'
+import Bct from './components/bct'
 
 import Uregister from './pages/landing/Uregister'
 import Dlogin from './pages/landing/Dlogin'
@@ -41,6 +42,7 @@ function App() {
         <Route path='/dhelp' element={<Dhelp />} />
         <Route path='/dsetting' element={<Dsetting />} />
       </Routes>
+      <Bct />
       <Footer />
     </Router>
   )
