@@ -8,7 +8,7 @@ function Navbar() {
   const [userName, setUserName] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const updateUserState = () => {
     // Check if user is logged in
     const user = localStorage.getItem('user');
     const driver = localStorage.getItem('driver');
@@ -23,12 +23,37 @@ function Navbar() {
       setUserName(driverData.username || 'Driver');
     } else {
       setUserType(null);
+      setUserName('');
     }
+  };
+
+  useEffect(() => {
+    // Initial check
+    updateUserState();
+
+    // Listen for storage changes (from other tabs)
+    const handleStorageChange = () => {
+      updateUserState();
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    // Listen for custom auth event (from same tab login/logout)
+    const handleAuthChange = () => {
+      updateUserState();
+    };
+    window.addEventListener('authChange', handleAuthChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authChange', handleAuthChange);
+    };
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('driver');
+    // Dispatch auth change event for navbar update
+    window.dispatchEvent(new Event('authChange'));
     setUserType(null);
     setUserName('');
     navigate('/');

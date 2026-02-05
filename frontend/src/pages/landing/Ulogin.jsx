@@ -21,6 +21,8 @@ function Ulogin() {
       const response =await AuthUservices.loginUser(data);
       console.log(response.data);
       localStorage.setItem('user',JSON.stringify(response.data));
+      // Dispatch auth change event for navbar update
+      window.dispatchEvent(new Event('authChange'));
       message.success("user logged in successfully");
       navigate('/uhome')
     }catch(err){console.log(err)}

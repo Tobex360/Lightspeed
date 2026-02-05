@@ -22,6 +22,8 @@ function Dlogin() {
       const response =await AuthDservices.loginDriver(data);
       console.log(response.data);
       localStorage.setItem('driver',JSON.stringify(response.data));
+      // Dispatch auth change event for navbar update
+      window.dispatchEvent(new Event('authChange'));
       message.success("Driver Logged In Successfully");
       navigate('/dhome');
     }catch(err){
