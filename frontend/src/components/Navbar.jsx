@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { UserOutlined } from '@ant-design/icons'
+
 import Logo from '../assets/Logo.svg'
 import './navbar.css'
 
@@ -95,7 +97,7 @@ function Navbar() {
                   </li>
                   <li className="nav-item dropdown">
                     <span className="nav-link dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      {userName}
+                      <UserOutlined />{" "}{userName}
                     </span>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                       <li><span className="dropdown-item cursor-pointer" onClick={handleLogout}>Logout</span></li>
@@ -118,7 +120,7 @@ function Navbar() {
                   </li>
                   <li className="nav-item dropdown">
                     <span className="nav-link dropdown-toggle" id="driverDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      {userName}
+                      <UserOutlined />{" "}{userName}
                     </span>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="driverDropdown">
                       <li><span className="dropdown-item cursor-pointer" onClick={handleLogout}>Logout</span></li>
