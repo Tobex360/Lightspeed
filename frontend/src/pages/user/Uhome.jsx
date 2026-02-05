@@ -372,6 +372,16 @@ function uhome() {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      render: (status) => {
+        const colorMap = {
+          'pending': 'gold',
+          'accepted': 'blue',
+          'in-transit': 'cyan',
+          'completed': 'green',
+          'cancelled': 'red'
+        };
+        return <Tag color={colorMap[status] || 'default'}>{status}</Tag>
+      }
     },
     {
       title: 'Action',
