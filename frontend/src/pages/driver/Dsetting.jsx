@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Input, Button, Form, message, Spin, Select } from 'antd'
+import { Input, Button, Form, message, Spin, Switch } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
@@ -7,6 +7,7 @@ function Dsetting() {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
   const [userData, setUserData] = useState(null)
+  const [isAvailable, setIsAvailable] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -21,18 +22,21 @@ function Dsetting() {
     const parsedUser = JSON.parse(user)
     setUserData(parsedUser)
     
+    // Set availability state
+    const available = parsedUser.isOpen || false
+    setIsAvailable(available)
+    
     // Set form values
     form.setFieldsValue({
       firstname: parsedUser.firstname || '',
       lastname: parsedUser.lastname || '',
       username: parsedUser.username || '',
       email: parsedUser.email || '',
-      street: parsedUser.address.street || '',
-      city: parsedUser.address.city || '',
-      state: parsedUser.address.state || '',
+      street: parsedUser.address?.street || '',
+      city: parsedUser.address?.city || '',
+      state: parsedUser.address?.state || '',
       phonenumber: parsedUser.phonenumber || '',
       vehicle: parsedUser.vehicle || '',
-      availability: parsedUser.isOpen ? 'yes' : 'no',
     })
   }, [form, navigate])
 
@@ -44,7 +48,6 @@ function Dsetting() {
 
     setLoading(true)
     try {
-      
       const payload = {
         firstname: values.firstname,
         lastname: values.lastname,
@@ -57,9 +60,8 @@ function Dsetting() {
           state: values.state
         },
         vehicle: values.vehicle,
-        isOpen: values.availability === 'yes'
+        isOpen: isAvailable // Use state value instead of form value
       }
-
 
       const response = await axios.put(
         `http://localhost:7000/driver/edit/${userData.userid}`,
@@ -70,7 +72,7 @@ function Dsetting() {
       const updatedUser = {
         ...userData,
         ...payload,
-        isOpen: payload.isOpen
+        isOpen: isAvailable
       }
       localStorage.setItem('driver', JSON.stringify(updatedUser))
       setUserData(updatedUser)
@@ -85,10 +87,19 @@ function Dsetting() {
       setLoading(false)
     }
   }
-  
-    if (!userData) {
-      return <Spin size="large" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }} />
+
+  const handleAvailabilityChange = (checked) => {
+    setIsAvailable(checked)
+    if (checked) {
+      message.info('You are now available for orders')
+    } else {
+      message.info('You are now unavailable for orders')
     }
+  }
+  
+  if (!userData) {
+    return <Spin size="large" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }} />
+  }
   
   return (
     <>
@@ -109,7 +120,7 @@ function Dsetting() {
                     name="firstname"
                     rules={[{ required: true, message: 'Please enter your first name' }]}
                   >
-                    <Input placeholder='First Name' />
+                    <Input placeholder='First Name' size="large" />
                   </Form.Item>
 
                   <Form.Item
@@ -117,7 +128,7 @@ function Dsetting() {
                     name="lastname"
                     rules={[{ required: true, message: 'Please enter your last name' }]}
                   >
-                    <Input placeholder='Last Name' />
+                    <Input placeholder='Last Name' size="large" />
                   </Form.Item>
 
                   <Form.Item
@@ -125,7 +136,7 @@ function Dsetting() {
                     name="username"
                     rules={[{ required: true, message: 'Please enter your username' }]}
                   >
-                    <Input placeholder='Username' />
+                    <Input placeholder='Username' size="large" />
                   </Form.Item>
 
                   <Form.Item
@@ -136,7 +147,7 @@ function Dsetting() {
                       { type: 'email', message: 'Please enter a valid email' }
                     ]}
                   >
-                    <Input type="email" placeholder='Email' />
+                    <Input type="email" placeholder='Email' size="large" />
                   </Form.Item>
 
                   <Form.Item
@@ -144,21 +155,23 @@ function Dsetting() {
                     name="street"
                     rules={[{ required: true, message: 'Please enter your Street' }]}
                   >
-                    <Input placeholder='Street' />
+                    <Input placeholder='Street' size="large" />
                   </Form.Item>
+
                   <Form.Item
                     label="City"
                     name="city"
                     rules={[{ required: true, message: 'Please enter your City' }]}
                   >
-                    <Input placeholder='City' />
+                    <Input placeholder='City' size="large" />
                   </Form.Item>
+
                   <Form.Item
                     label="State"
                     name="state"
                     rules={[{ required: true, message: 'Please enter your State' }]}
                   >
-                    <Input placeholder='State' />
+                    <Input placeholder='State' size="large" />
                   </Form.Item>
 
                   <Form.Item
@@ -166,25 +179,42 @@ function Dsetting() {
                     name="phonenumber"
                     rules={[{ required: true, message: 'Please enter your phone number' }]}
                   >
-                    <Input placeholder='Phone Number' />
+                    <Input placeholder='Phone Number' size="large" />
                   </Form.Item>
+
                   <Form.Item
                     label="Vehicle"
                     name="vehicle"
                     rules={[{ required: true, message: 'Please enter your vehicle' }]}
                   >
-                    <Input placeholder='vehicle' />
+                    <Input placeholder='Vehicle' size="large" />
                   </Form.Item>
 
-                  <Form.Item
-                    label="Availability"
-                    name="availability"
-                    rules={[{ required: true, message: 'Please select your availability' }]}
-                  >
-                    <Select placeholder="Select availability">
-                      <Select.Option value="yes">Yes (Available for Orders)</Select.Option>
-                      <Select.Option value="no">No (Not Available)</Select.Option>
-                    </Select>
+                  <Form.Item label="Availability">
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px',
+                      padding: '12px',
+                      backgroundColor: isAvailable ? '#f6ffed' : '#fff7e6',
+                      border: `2px solid ${isAvailable ? '#52c41a' : '#faad14'}`,
+                      borderRadius: '8px',
+                      transition: 'all 0.3s ease'
+                    }}>
+                      <Switch 
+                        checked={isAvailable}
+                        onChange={handleAvailabilityChange}
+                        checkedChildren="Available"
+                        unCheckedChildren="Unavailable"
+                        style={{ minWidth: '60px' }}
+                      />
+                      <span style={{ 
+                        fontWeight: 500,
+                        color: isAvailable ? '#52c41a' : '#faad14'
+                      }}>
+                        {isAvailable ? 'You are available for orders' : 'You are currently unavailable'}
+                      </span>
+                    </div>
                   </Form.Item>
 
                   <Form.Item>
