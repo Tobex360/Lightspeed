@@ -7,3 +7,9 @@ footer {
   .social-icons a {
     font-size: 1.25rem;
   }
+  .link:hover{
+    color: #66B9FF !important;
+  }
+  .link{
+    text-decoration: none;
+  }
