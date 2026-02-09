@@ -8,37 +8,50 @@ function Landing() {
   return (
     <>
       {/* hero section */}
+      <div className='landing-wrapper'>
       <section className='hero-section'id='home'>
-        <div className='container'>
+        <div className='container text-center'>
+          <div className='badge-pill'>Coming to 20+ Cities</div>
           <h1 className='hero-title'>
             LIGHT<i className='fas fa-bolt lightning-icon'></i>SPEED
           </h1>
-          <p className='hero-subtitle'>Lightning Quick Deliveries</p>
+          <p className='hero-subtitle'>Premium Deliveries, at the speed of thought.</p>
           </div>  
        </section>
        {/* end hero section */}
-       {/* reg cards */}
-       <section className='cards-section'>
+       {/* Registration Cards */}
+      <section className='cards-section'>
         <div className='container'>
-          <div className='row justify-content-center g-4'>
+          <div className='row justify-content-center g-5'>
             <div className='col-md-5'>
               <div className='registration-card'>
-                <img src={user} alt="User" className='card-image' />
-                <h3 className='card-title'>Become a User</h3><br />
-                <Link to ='/uregister' className="register-btn" onclick="alert('Redirecting to User Registration...')">Register</Link>
+                <div className="card-image-wrapper">
+                  <img src={user} alt="User" className='card-image' />
+                </div>
+                <h3 className='card-title'>Send a Package</h3>
+                <p className='card-text text-muted'>Fast, secure, and trackable personal deliveries.</p>
+                <Link to='/uregister' className="register-btn">
+                  Get Started
+                </Link>
               </div>
             </div>
             <div className='col-md-5'>
               <div className='registration-card'>
-                <img src={driver} alt="driver" className='card-image' />
-                <h3 className='card-title'>Become a Driver</h3><br />
-                <Link to ='/dregister' className="register-btn" onclick="alert('Redirecting to driver Registration...')">Register</Link>
+                <div className="card-image-wrapper">
+                  <img src={driver} alt="driver" className='card-image' />
+                </div>
+                <h3 className='card-title'>Start Earning</h3>
+                <p className='card-text text-muted'>Flexible hours with the highest rates in the industry.</p>
+                <Link to='/dregister' className="register-btn secondary-btn">
+                  Join the Fleet
+                </Link>
               </div>
             </div>
           </div>
         </div>
-       </section>
-       {/* end reg crd */}
+      </section>
+
+
        {/* features sct */}
        <section className='features-section'>
         <div className='container'>
@@ -68,6 +81,7 @@ function Landing() {
           </div>
         </div>
        </section>
+       </div>
        {/* end features sct */}
     </>
   )
