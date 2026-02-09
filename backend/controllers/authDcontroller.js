@@ -45,11 +45,11 @@ async function loginDriver(req,res) {
         const {username, password} = req.body;
         const driver = await Driver.findOne({username});
         if(!driver){
-            return res.status(400).send({message:'Username does not exist'});
+            return res.status(401).send({message:'Username does not exist'});
         }
         const isPasswordValid = await driver.comparePassword(password);
         if(!isPasswordValid){
-            return res.status(400).send({message:'Wrong Password'});
+            return res.status(401).send({message:'Wrong Password'});
         }
         let token = await jwt.sign(
             {

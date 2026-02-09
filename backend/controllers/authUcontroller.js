@@ -39,11 +39,11 @@ async function loginUser(req,res) {
         const {username,password} = req.body;
         const user = await User.findOne({username});
         if(!user){
-            return res.status(400).send({message:'Username does not exist'})
+            return res.status(401).send({message:'Username does not exist'})
         }
         const isPasswordValid = await user.comparePassword(password);
         if(!isPasswordValid){
-            return res.status(400).send({message:'Wrong Password'});
+            return res.status(401).send({message:'Wrong Password'});
         }
         let token = await jwt.sign(
             {

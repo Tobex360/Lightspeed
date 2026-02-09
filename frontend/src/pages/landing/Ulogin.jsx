@@ -27,7 +27,22 @@ function Ulogin() {
       window.dispatchEvent(new Event('authChange'));
       message.success("user logged in successfully");
       navigate('/uhome')
-    }catch(err){console.log(err)}
+    }catch (err) {
+      console.log(err);
+
+      // If backend sends a response (wrong username/password)
+      if (err.response) {
+        if (err.response.status === 401 || err.response.status === 404) {
+          message.error("User not found or incorrect password");
+        } else {
+          message.error(err.response.data?.message || "Login failed");
+        }
+      } 
+      // Network or unexpected error
+      else {
+        message.error("Something went wrong. Please try again.");
+      }
+  }
   }
 
 
