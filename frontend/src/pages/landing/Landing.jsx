@@ -13,7 +13,7 @@ function Landing() {
           <h1 className='hero-title'>
             LIGHT<i className='fas fa-bolt lightning-icon'></i>SPEED
           </h1>
-          <p className='hero-subtitle'>We Think Of You</p>
+          <p className='hero-subtitle'>Lightning Quick Deliveries</p>
           </div>  
        </section>
        {/* end hero section */}
@@ -25,14 +25,14 @@ function Landing() {
               <div className='registration-card'>
                 <img src={user} alt="User" className='card-image' />
                 <h3 className='card-title'>Become a User</h3><br />
-                <Link to ='/uregister' class="register-btn" onclick="alert('Redirecting to User Registration...')">Register</Link>
+                <Link to ='/uregister' className="register-btn" onclick="alert('Redirecting to User Registration...')">Register</Link>
               </div>
             </div>
             <div className='col-md-5'>
               <div className='registration-card'>
                 <img src={driver} alt="driver" className='card-image' />
                 <h3 className='card-title'>Become a Driver</h3><br />
-                <Link to ='/dregister' class="register-btn" onclick="alert('Redirecting to driver Registration...')">Register</Link>
+                <Link to ='/dregister' className="register-btn" onclick="alert('Redirecting to driver Registration...')">Register</Link>
               </div>
             </div>
           </div>
