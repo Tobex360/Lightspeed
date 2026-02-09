@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Landing from './pages/landing/Landing'
 import Navbar from './components/Navbar'
-import Footer from './components/footer'
+import Footer from './components/Footer'
 import Bct from './components/bct'
 
 import Uregister from './pages/landing/Uregister'
