@@ -61,7 +61,7 @@ exports.getIncomingOrders = async(req,res)=>{
             return res.status(400).send({message: "Invalid user ID"});
         }
         
-        const orders = await Order.find({receiver: userId, status: {$in: ['accepted', 'in-transit', 'completed', 'driver-pending']}})
+        const orders = await Order.find({receiver: userId, status: {$in: ['accepted', 'in-transit', 'driver-pending']}})
             .populate('sender','username firstname lastname email address phonenumber')
             .populate('receiver', 'username firstname lastname email address phonenumber')
             .populate('driver', 'username firstname lastname email vehicle phonenumber')

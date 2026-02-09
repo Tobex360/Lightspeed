@@ -66,6 +66,7 @@ async function loginDriver(req,res) {
             address:driver?.address,
             phonenumber:driver?.phonenumber,
             vehicle:driver?.vehicle,
+            isOpen:driver?.isOpen,
             role: 'driver',
             token
         }

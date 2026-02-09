@@ -9,7 +9,7 @@ import { EyeOutlined } from '@ant-design/icons'
 function dhome() {
   const [username, setUsername] = useState("")
   const [firstname, setFirstname] = useState("")
-  const [available, setAvailable] = useState(false)
+  const [available, setAvailable] = useState(true)
   const [lastname, setLastname] = useState("")
   const [driverId, setDriverId] = useState("")
   const [pendingOrders, setPendingOrders] = useState([])
