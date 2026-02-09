@@ -4,6 +4,7 @@ import driver from '../../assets/driver.avif'
 import { Input, Button, Form, message } from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthDservices from '../../services/authDservices'
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
 
 function Dlogin() {
 
@@ -46,6 +47,7 @@ function Dlogin() {
             rules={[{ required: true, message: 'Please input your Username!' }]}
           >
             <Input
+              prefix ={<UserOutlined />}
               placeholder='Username'
               value={username}
               onChange={(e)=>setUsername(e.target.value)}
@@ -56,6 +58,7 @@ function Dlogin() {
             rules={[{ required: true, message: 'Please input your password!' }]}
           >
             <Input.Password
+              prefix ={<LockOutlined />}
               placeholder='Password'
               value={password}
               onChange={(e)=>setPassword(e.target.value)}
