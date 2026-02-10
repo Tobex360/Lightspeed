@@ -78,7 +78,7 @@ function Uregister() {
             </Col>
           </Row>
 
-          <Divider orientation="left" style={{ fontSize: '12px', color: '#999' }}>Address Details</Divider>
+          <Divider titlePlacement="left" style={{ fontSize: '12px', color: '#999' }}>Address Details</Divider>
 
           <Form.Item name="street" rules={[{ required: true }]}>
             <Input prefix={<HomeOutlined />} placeholder="Street Address" />

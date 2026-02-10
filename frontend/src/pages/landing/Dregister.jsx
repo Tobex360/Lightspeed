@@ -86,7 +86,7 @@ function Dregister() {
             </Col>
           </Row>
 
-          <Divider orientation="left" style={{ color: '#999', fontSize: '12px' }}>Professional Details</Divider>
+          <Divider titlePlacement="left" style={{ color: '#999', fontSize: '12px' }}>Professional Details</Divider>
 
           <Form.Item name="vehicle" rules={[{ required: true, message: 'Please specify your vehicle model' }]}>
             <Input prefix={<CarOutlined />} placeholder="Vehicle Model (e.g. Toyota Camry 2022)" />
