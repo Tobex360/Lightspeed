@@ -417,7 +417,7 @@ function uhome() {
     <><br />
     <div className='container'>
       <div className='row justify-content-center'>
-        <h2>Welcome, {firstname}</h2>
+        <h2>Hello, {firstname} 👋</h2>
       </div>
     </div><br /><hr />
 
@@ -425,7 +425,7 @@ function uhome() {
       <div className='row'>
         <div className='col-md-14'>
           <div className=''>
-            <Link to={'/ucreate'}><Button size='large' type='primary'><PlusOutlined />Create Order</Button></Link>
+            <Link to={'/ucreate'}><Button size='large' type='primary' icon={<PlusOutlined />} shape="round" style={{ height: '50px', padding: '0 30px' }}>New Shipment</Button></Link>
           </div>
         </div>
       </div>

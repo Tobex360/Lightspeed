@@ -372,7 +372,7 @@ function dhome() {
     <><br />
     <div className='container'>
       <div className='row justify-content-center'>
-        <h2>Welcome, {firstname} {" "}{lastname}{" "}{available?(<Tag color="green">Available</Tag>):(<Tag color="red">Not Available</Tag>)}</h2>
+        <h2>Hello, {firstname} {" "}👋{" "}{available?(<Tag color="green">Available</Tag>):(<Tag color="red">Not Available</Tag>)}</h2>
       </div>
     </div><br /><hr />
 
