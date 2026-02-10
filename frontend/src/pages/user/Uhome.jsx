@@ -3,7 +3,8 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Input, Button, Form, message, Table, Tag, Modal, Divider, Descriptions} from 'antd'
-import { EyeOutlined } from '@ant-design/icons'
+import { EyeOutlined, PlusOutlined } from '@ant-design/icons'
+
 
 
 
@@ -424,7 +425,7 @@ function uhome() {
       <div className='row'>
         <div className='col-md-14'>
           <div className=''>
-            <Link to={'/ucreate'}><Button size='large' type='primary'>Create Order</Button></Link>
+            <Link to={'/ucreate'}><Button size='large' type='primary'><PlusOutlined />Create Order</Button></Link>
           </div>
         </div>
       </div>
