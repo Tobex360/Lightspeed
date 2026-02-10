@@ -1,15 +1,112 @@
-.login_container {
+/* Centering the entire screen */
+.login-wrapper {
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    padding: 1rem;
-    width: 1100px;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
 }
-.card-image {
-    width: 150px;
-    height: 150px;
+
+/* Designing the card */
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 20px !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Avatar styling */
+.image-container {
+    margin-bottom: 15px;
+}
+
+.auth-avatar {
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     object-fit: cover;
-    margin: 0 auto 2rem;
-    border: 5px solid #f3f4f6;
+    border: 3px solid #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* Input tweaks */
+.ant-input-affix-wrapper {
+    border-radius: 8px !important;
+    padding: 10px 15px !important;
+}
+
+.input-icon {
+    color: #bfbfbf;
+    margin-right: 8px;
+}
+
+/* Button styling */
+.login-btn {
+    height: 45px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    background: #1677ff !important;
+    box-shadow: 0 4px 10px rgba(22, 119, 255, 0.2) !important;
+}
+
+/* Footer layout */
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.alt-login-link {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+/* Add this to your existing register.css */
+
+.driver-theme-btn {
+    background: #000000 !important; /* Professional black for driver portal */
+    border-color: #000000 !important;
+}
+
+.driver-theme-btn:hover {
+    background: #333333 !important;
+    transform: translateY(-1px);
+}
+
+/* Ensure the wrapper uses a consistent layout */
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f2f5; /* Light neutral gray */
+    padding: 20px;
+}
+
+/* Update your existing .auth-card or add a specific one for register */
+.register-card {
+    max-width: 500px !important; /* Slightly wider than login card */
+}
+
+/* Adjust form item margins to keep it compact */
+.register-card .ant-form-item {
+    margin-bottom: 16px;
+}
+
+/* Custom styling for the Address Divider */
+.register-card .ant-divider-horizontal {
+    margin: 10px 0 20px 0;
+}
+
+/* Make icons look crisp */
+.ant-input-prefix {
+    margin-right: 8px;
+    color: #bfbfbf;
 }
