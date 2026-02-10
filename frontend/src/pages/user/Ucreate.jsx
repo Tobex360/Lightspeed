@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Input, Button, Form, message, Select, Spin } from 'antd'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import BackButton from '../../components/BackButton';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -78,7 +79,7 @@ function Ucreate() {
         <div className='container'>
             <div className='row'>
                 <div className='col-md-6 offset-md-3'>
-                    <h2>Create Order</h2>
+                    <h2> <BackButton /> CREATE ORDER</h2>
                     <div className='form' style={{ marginTop: '30px' }}>
                         <Form form={form} onFinish={handleSubmit} layout='vertical'>
                             <Form.Item

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Input, Button, Form, message, Spin, Switch } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import BackButton from '../../components/BackButton'
 import axios from 'axios'
 
 function Dsetting() {
@@ -107,7 +108,7 @@ function Dsetting() {
         <div className='container'>
           <div className='row'>
             <div className='col-md-6 offset-md-3'>
-              <h2>Edit Profile</h2>
+              <h2><BackButton />Edit Profile</h2>
               <div className='form' style={{ marginTop: '30px' }}>
                 <Form
                   form={form}

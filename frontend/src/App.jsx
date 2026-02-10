@@ -4,6 +4,7 @@ import Landing from './pages/landing/Landing'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Bct from './components/bct'
+import BackButton from './components/BackButton'
 
 import Uregister from './pages/landing/Uregister'
 import Dlogin from './pages/landing/Dlogin'
