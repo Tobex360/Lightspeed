@@ -10,6 +10,7 @@ function BackButton({ text = '', style = {}, ...props }) {
   return (
     <Button
       icon={<ArrowLeftOutlined />}
+      shape='circle'
       onClick={() => navigate(-1)}
       style={{ marginBottom: '16px', ...style }}
       {...props}
