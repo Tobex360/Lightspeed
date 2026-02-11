@@ -506,7 +506,7 @@ function dhome() {
               </Descriptions>
     
     
-              <Divider titlePlacement='left'>Timeline</Divider>
+              <Divider titlePlacement='left'>Timeline </Divider>
               <Descriptions bordered column={1}>
                 <Descriptions.Item label="Created At">
                   {new Date(selectedOrder.createdAt).toLocaleString()}
