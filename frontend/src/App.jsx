@@ -1,5 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { SocketProvider } from './context/SocketContext';
+
 import Landing from './pages/landing/Landing'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -15,6 +17,7 @@ import Uhome from './pages/user/Uhome'
 import Uhelp from './pages/user/Uhelp'
 import Usetting from './pages/user/Usetting'
 import Ucreate from './pages/user/Ucreate'
+import TrackOrder from './pages/user/TrackOrder';
 
 
 import Dhome from './pages/driver/Dhome'
@@ -25,27 +28,30 @@ import Dsetting from './pages/driver/Dsetting'
 
 function App() {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path='/' element={<Landing />} index />
-        <Route path='/ulogin' element={<Ulogin />} />
-        <Route path='/uregister' element={<Uregister />} />
-        <Route path='/dlogin' element={<Dlogin />} />
-        <Route path='/dregister' element={<Dregister />} />
+    <SocketProvider>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path='/' element={<Landing />} index />
+          <Route path='/ulogin' element={<Ulogin />} />
+          <Route path='/uregister' element={<Uregister />} />
+          <Route path='/dlogin' element={<Dlogin />} />
+          <Route path='/dregister' element={<Dregister />} />
 
-        <Route path='/uhome' element={<Uhome />} />
-        <Route path='/uhelp' element={<Uhelp />} />
-        <Route path='/usetting' element={<Usetting />} />
-        <Route path='/ucreate' element={<Ucreate />} />
+          <Route path='/uhome' element={<Uhome />} />
+          <Route path='/uhelp' element={<Uhelp />} />
+          <Route path='/usetting' element={<Usetting />} />
+          <Route path='/ucreate' element={<Ucreate />} />
+          <Route path='/track/:trackingNumber' element={<TrackOrder />} />
 
-        <Route path='/dhome' element={<Dhome />} />
-        <Route path='/dhelp' element={<Dhelp />} />
-        <Route path='/dsetting' element={<Dsetting />} />
-      </Routes>
-      <Bct />
-      <Footer />
-    </Router>
+          <Route path='/dhome' element={<Dhome />} />
+          <Route path='/dhelp' element={<Dhelp />} />
+          <Route path='/dsetting' element={<Dsetting />} />
+        </Routes>
+        <Bct />
+        <Footer />
+      </Router>
+    </SocketProvider>
   )
 }
 

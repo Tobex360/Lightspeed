@@ -39,6 +39,21 @@ const orderSchema = new Schema({
         type: String,
         unique: true
     },
+    pickupLocation: {
+        lat: Number,
+        lng: Number,
+        address: String
+    },
+    deliveryLocation: {
+        lat: Number,
+        lng: Number,
+        address: String
+    },
+    driverLocation: {
+        lat: Number,
+        lng: Number,
+        timestamp: Date
+    },
 }, {
     timestamps: true // Automatically adds createdAt and updatedAt
 });

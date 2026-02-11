@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Input, Button, Form, message, Table, Tag, Modal, Divider, Descriptions, Select} from 'antd'
 import { EyeOutlined } from '@ant-design/icons'
+import DriverLocationSharing from '../../components/DriverShare'
 
 
 function dhome() {
@@ -375,6 +376,8 @@ function dhome() {
         <h2>Hello, {firstname} {" "}👋{" "}{available?(<Tag color="green">Available</Tag>):(<Tag color="red">Not Available</Tag>)}</h2>
       </div>
     </div><br /><hr />
+
+    <DriverLocationSharing />
 
     <div className='container'>
       <div className='row'>

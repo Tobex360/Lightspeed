@@ -1,10 +1,11 @@
 const express = require('express');
-const {createOrder, getOutgoingOrders, getIncomingOrders, getReceiverPendingOrders, getDriverPendingOrders, acceptOrderByReceiver, declineOrderByReceiver, acceptOrderByDriver, declineOrderByDriver, getDriverOngoingOrders, updateOrderStatus, getCompletedOrders, deleteOrder} = require('../controllers/orderController')
+const {createOrder, getOutgoingOrders, getIncomingOrders, getReceiverPendingOrders, getDriverPendingOrders, acceptOrderByReceiver, declineOrderByReceiver, acceptOrderByDriver, declineOrderByDriver, getDriverOngoingOrders, updateOrderStatus, getCompletedOrders, deleteOrder, trackOrder} = require('../controllers/orderController')
 const router = express.Router();
 
 
 
 router.post('/create', createOrder);
+router.get('/track/:trackingNumber', trackOrder);
 router.get('/outgoing/:userId', getOutgoingOrders);
 router.get('/incoming/:userId', getIncomingOrders);
 router.get('/receiver-pending/:userId', getReceiverPendingOrders);

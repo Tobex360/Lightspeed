@@ -20,11 +20,24 @@ exports.createOrder = async(req,res)=>{
             driver: data.driver ? new mongoose.Types.ObjectId(data.driver) : null,
             packageName: data.packageName,
             size: data.size,
-            description: data.description
+            description: data.description,
+            pickupLocation: data.pickupLocation || null,
+            deliveryLocation: data.deliveryLocation || null
         });
         
         const result = await order.save();
         console.log(result);
+
+        // populate order details
+        const populatedOrder = await Order.findById(order._id)
+        .populate('sender receiver driver');
+
+        //Emit to all drivers via socket
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('order:available', populatedOrder);
+        }
+
         res.status(201).send({message:"Order Created", order: result})
     }catch(err){
         console.log(err)
@@ -243,6 +256,18 @@ exports.updateOrderStatus = async(req,res)=>{
             {status: status},
             {new: true}
         ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
+
+        // Emit status update via socket
+        const io = req.app.get('io');
+        if (io){
+            io.to(`order:${req.params.id}`).emit('status:update',{
+                orderId: req.params.id,
+                status,
+                timestamp: new Date()
+            });
+        }
+
+        res.json({ order })
         
         res.status(200).send({message:"Order status updated", order: order})
     }catch(err){
@@ -293,6 +318,30 @@ exports.deleteOrder = async(req,res)=>{
         }
         
         res.status(200).send({message:"Order deleted successfully", order: order})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.trackOrder = async(req,res)=>{
+    try{
+        const {trackingNumber} = req.params;
+        
+        if (!trackingNumber) {
+            return res.status(400).send({message: "Tracking number is required"});
+        }
+        
+        const order = await Order.findOne({trackingNumber: trackingNumber})
+            .populate('sender','username firstname lastname email address phonenumber')
+            .populate('receiver','username firstname lastname email address phonenumber')
+            .populate('driver', 'username firstname lastname email vehicle phonenumber');
+        
+        if (!order) {
+            return res.status(404).send({message: "Order not found"});
+        }
+        
+        res.status(200).send({message:"Order retrieved", order: order})
     }catch(err){
         console.log(err)
         res.status(500).send({message: err.message})
