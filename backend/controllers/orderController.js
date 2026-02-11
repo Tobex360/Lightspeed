@@ -174,14 +174,25 @@ exports.declineOrderByReceiver = async(req,res)=>{
 exports.acceptOrderByDriver = async(req,res)=>{
     try{
         const {orderId} = req.params;
+        const {driverLocation} = req.body;
         
         if (!mongoose.Types.ObjectId.isValid(orderId)) {
             return res.status(400).send({message: "Invalid order ID"});
         }
         
+        const updateData = { status: 'accepted' };
+        
+        if (driverLocation && driverLocation.lat && driverLocation.lng) {
+            updateData.driverLocation = {
+                lat: driverLocation.lat,
+                lng: driverLocation.lng,
+                timestamp: new Date()
+            };
+        }
+        
         const order = await Order.findByIdAndUpdate(
             orderId,
-            {status: 'accepted'},
+            updateData,
             {new: true}
         ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
         

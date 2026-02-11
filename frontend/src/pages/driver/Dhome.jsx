@@ -76,14 +76,37 @@ function dhome() {
 
   const handleAcceptOrder = async (orderId) => {
     try {
-      const response = await fetch(`http://localhost:7000/order/accept-driver/${orderId}`, {
-        method: 'PUT'
-      });
-      const data = await response.json();
-      if(data.order){
-        message.success('Order accepted');
-        fetchDriverPendingOrders();
-        fetchDriverOngoingOrders();
+      // Get driver's current location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            
+            const response = await fetch(`http://localhost:7000/order/accept-driver/${orderId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                driverLocation: {
+                  lat: latitude,
+                  lng: longitude
+                }
+              })
+            });
+            const data = await response.json();
+            if (data.order) {
+              message.success('Order accepted');
+              fetchDriverPendingOrders();
+              fetchDriverOngoingOrders();
+            }
+          },
+          (error) => {
+            message.error('Unable to get your location. Please enable location services.');
+          }
+        );
+      } else {
+        message.error('Geolocation is not supported by your browser');
       }
     } catch (error) {
       console.log('Error accepting order:', error);

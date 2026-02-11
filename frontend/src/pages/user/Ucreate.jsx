@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Input, Button, Form, message, Select, Spin } from 'antd'
+import { Input, Button, Form, message, Select, Space } from 'antd'
+import { EnvironmentOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
@@ -12,64 +13,90 @@ function Ucreate() {
   const [loading, setLoading] = useState(false);
   const [drivers, setDrivers] = useState([]);
   const [loadingDrivers, setLoadingDrivers] = useState(true);
+  const [pickupLocation, setPickupLocation] = useState(null);
+  const [deliveryLocation, setDeliveryLocation] = useState(null);
 
   const navigate = useNavigate();
 
-    // Fetch available drivers when component mounts
+  useEffect(() => {
+    fetchAvailableDrivers();
+  }, []);
 
-    useEffect(()=>{
-        fetchAvailableDrivers();
-    },[]);
+  const fetchAvailableDrivers = async () => {
+    try {
+      setLoadingDrivers(true);
+      const response = await axios.get(`http://localhost:7000/driver/available`);
+      setDrivers(response.data.drivers || [])
+    } catch (error) {
+      setDrivers([]);
+    } finally {
+      setLoadingDrivers(false);
+    }
+  };
 
-    const fetchAvailableDrivers = async ()=>{
-        try{
-            setLoadingDrivers(true);
-            const response = await axios.get(`http://localhost:7000/driver/available`);
-            setDrivers(response.data.drivers || [])
-        }catch(error){
-            console.log(error)
-            setDrivers([]);
-        }finally{
-            setLoadingDrivers(false);
+  const getCurrentLocation = (locationType) => {
+    if (!navigator.geolocation) {
+      message.error('Geolocation is not supported by your browser');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        if (locationType === 'pickup') {
+          setPickupLocation({ lat: latitude, lng: longitude });
+          form.setFieldsValue({ pickupLocation: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}` });
+          message.success('Pickup location captured');
+        } else {
+          setDeliveryLocation({ lat: latitude, lng: longitude });
+          form.setFieldsValue({ deliveryLocation: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}` });
+          message.success('Delivery location captured');
         }
-    };
+      },
+      (error) => {
+        message.error('Unable to get your location. Please check your browser permissions.');
+      }
+    );
+  };
 
-    const handleSubmit = async(values)=>{
-        setLoading(true);
-        try{
-            console.log('Form Values:', values);
-            // Get sender
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            console.log('Sender user:', user);
+  const handleSubmit = async (values) => {
+    if (!pickupLocation || !deliveryLocation) {
+      message.error('Please capture both pickup and delivery locations');
+      return;
+    }
 
-            // Resolve receiver username to user ID
-            const receiverResponse = await axios.get(`http://localhost:7000/user/username/${values.receiver}`);
-            const receiverId = receiverResponse.data.user._id;
-            console.log('Receiver ID:', receiverId);
+    setLoading(true);
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-            const orderData ={
-                sender: user.userid,
-                receiver: receiverId,
-                driver: values.driver || null,
-                packageName: values.packagename,
-                size: values.size,
-                description: values.description
-            }
-            console.log('Order data being sent:', orderData);
+      const receiverResponse = await axios.get(`http://localhost:7000/user/username/${values.receiver}`);
+      const receiverId = receiverResponse.data.user._id;
 
-            const response = await axios.post(`http://localhost:7000/order/create`, orderData);
+      const orderData = {
+        sender: user.userid,
+        receiver: receiverId,
+        driver: values.driver || null,
+        packageName: values.packagename,
+        size: values.size,
+        description: values.description,
+        pickupLocation: { ...pickupLocation, address: values.pickupAddress || '' },
+        deliveryLocation: { ...deliveryLocation, address: values.deliveryAddress || '' }
+      };
 
-            message.success('Order created successfully!');
-            form.resetFields();
-            navigate('/uhome');
+      await axios.post(`http://localhost:7000/order/create`, orderData);
 
-        }catch(err){
-            console.log('Error details:', err.response?.data || err.message)
-            message.error(err.response?.data?.message || 'Failed to create order. Please check the receiver username and try again.')
-        } finally{
-            setLoading(false);
-        }
-    };
+      message.success('Order created successfully!');
+      form.resetFields();
+      setPickupLocation(null);
+      setDeliveryLocation(null);
+      navigate('/uhome');
+
+    } catch (err) {
+      message.error(err.response?.data?.message || 'Failed to create order');
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
 
@@ -79,9 +106,70 @@ function Ucreate() {
         <div className='container'>
             <div className='row'>
                 <div className='col-md-6 offset-md-3'>
-                    <h2> <BackButton /> CREATE ORDER</h2>
+                    <h2><BackButton /> CREATE ORDER</h2>
                     <div className='form' style={{ marginTop: '30px' }}>
                         <Form form={form} onFinish={handleSubmit} layout='vertical'>
+                          
+                          {/* Location Section */}
+                          <Form.Item
+                            label="Pickup Location"
+                            name="pickupLocation"
+                            rules={[{ required: true, message: 'Please capture pickup location' }]}
+                          >
+                            <Input 
+                              placeholder='Location will appear here' 
+                              size='large'
+                              disabled 
+                            />
+                          </Form.Item>
+                          <Form.Item>
+                            <Button 
+                              icon={<EnvironmentOutlined />}
+                              block
+                              onClick={() => getCurrentLocation('pickup')}
+                            >
+                              Get Current Pickup Location
+                            </Button>
+                          </Form.Item>
+                          {pickupLocation && <p style={{ color: 'green', marginBottom: 16 }}>✓ Pickup location set</p>}
+
+                          <Form.Item
+                            label="Pickup Address (Optional)"
+                            name="pickupAddress"
+                          >
+                            <Input placeholder='Enter pickup address or description' size='large' />
+                          </Form.Item>
+
+                          <Form.Item
+                            label="Delivery Location"
+                            name="deliveryLocation"
+                            rules={[{ required: true, message: 'Please capture delivery location' }]}
+                          >
+                            <Input 
+                              placeholder='Location will appear here' 
+                              size='large'
+                              disabled 
+                            />
+                          </Form.Item>
+                          <Form.Item>
+                            <Button 
+                              icon={<EnvironmentOutlined />}
+                              block
+                              onClick={() => getCurrentLocation('delivery')}
+                            >
+                              Get Current Delivery Location
+                            </Button>
+                          </Form.Item>
+                          {deliveryLocation && <p style={{ color: 'green', marginBottom: 16 }}>✓ Delivery location set</p>}
+
+                          <Form.Item
+                            label="Delivery Address (Optional)"
+                            name="deliveryAddress"
+                          >
+                            <Input placeholder='Enter delivery address or description' size='large' />
+                          </Form.Item>
+
+                          {/* Package Section */}
                             <Form.Item
                                 label="Package Name"
                                 name="packagename"
@@ -94,7 +182,7 @@ function Ucreate() {
                                 name="receiver"
                                 rules={[{ required: true, message: 'Please enter your Receiver' }]}
                                 >
-                                <Input placeholder='Receiver Username' />
+                                <Input placeholder='Receiver Username' size='large'/>
                             </Form.Item>
                             <Form.Item
                                 label="Driver"
