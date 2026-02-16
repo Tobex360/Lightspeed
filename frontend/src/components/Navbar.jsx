@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { UserOutlined } from '@ant-design/icons'
-
-import Logo from '../assets/Logo.svg'
-import Logo2 from '../assets/Logo 2.svg'
-import Logo3 from '../assets/Logo 3.svg'
 import Logo4 from '../assets/Logo 4.svg'
 import './navbar.css'
 

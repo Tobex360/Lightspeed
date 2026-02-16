@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Timeline, Tag, Spin, Alert } from 'antd';
 import BackButton from '../../components/BackButton';
+import DeliveryAnimation from '../../components/DeliveryAnimation';
 import axios from 'axios';
 
 function TrackOrder() {
@@ -68,6 +69,8 @@ function TrackOrder() {
               </Tag>
             </div>
           </Card>
+
+          <DeliveryAnimation status={order.status}/>
 
           {/* Order Timeline */}
           <Card title="Order Timeline" className="mb-4">
