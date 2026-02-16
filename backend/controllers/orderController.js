@@ -298,3 +298,26 @@ exports.deleteOrder = async(req,res)=>{
         res.status(500).send({message: err.message})
     }
 }
+exports.trackOrder = async(req,res)=>{
+    try{
+        const {trackingNumber} = req.params;
+        
+        if (!trackingNumber) {
+            return res.status(400).send({message: "Tracking number is required"});
+        }
+        
+        const order = await Order.findOne({trackingNumber: trackingNumber})
+            .populate('sender','username firstname lastname email address phonenumber')
+            .populate('receiver','username firstname lastname email address phonenumber')
+            .populate('driver', 'username firstname lastname email vehicle phonenumber');
+        
+        if (!order) {
+            return res.status(404).send({message: "Order not found"});
+        }
+        
+        res.status(200).send({message:"Order retrieved", order: order})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}

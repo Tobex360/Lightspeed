@@ -225,6 +225,11 @@ function uhome() {
       title: 'Tracking Number',
       dataIndex: 'trackingNumber',
       key: 'trackingNumber',
+      render: (trackingNumber) => (
+        <Link to={`/track/${trackingNumber}`} style={{ color: '#1890ff' }}>
+          {trackingNumber}
+        </Link>
+      )
     },
     {
       title:'Action',
@@ -282,6 +287,11 @@ function uhome() {
       title: 'Tracking Number',
       dataIndex: 'trackingNumber',
       key: 'trackingNumber',
+      render: (trackingNumber) => (
+        <Link to={`/track/${trackingNumber}`} style={{ color: '#1890ff' }}>
+          {trackingNumber}
+        </Link>
+      )
     },
     {
       title:'Action',
@@ -383,6 +393,16 @@ function uhome() {
         };
         return <Tag color={colorMap[status] || 'default'}>{status}</Tag>
       }
+    },
+    {
+      title: 'Tracking Number',
+      dataIndex: 'trackingNumber',
+      key: 'trackingNumber',
+      render: (trackingNumber) => (
+        <Link to={`/track/${trackingNumber}`} style={{ color: '#1890ff' }}>
+          {trackingNumber}
+        </Link>
+      )
     },
     {
       title: 'Action',

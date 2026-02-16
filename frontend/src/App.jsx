@@ -15,6 +15,7 @@ import Uhome from './pages/user/Uhome'
 import Uhelp from './pages/user/Uhelp'
 import Usetting from './pages/user/Usetting'
 import Ucreate from './pages/user/Ucreate'
+import TrackOrder from './pages/user/TrackOrder'
 
 
 import Dhome from './pages/driver/Dhome'
@@ -38,6 +39,7 @@ function App() {
         <Route path='/uhelp' element={<Uhelp />} />
         <Route path='/usetting' element={<Usetting />} />
         <Route path='/ucreate' element={<Ucreate />} />
+        <Route path='/track/:trackingNumber' element={<TrackOrder />} />
 
         <Route path='/dhome' element={<Dhome />} />
         <Route path='/dhelp' element={<Dhelp />} />

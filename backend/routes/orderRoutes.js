@@ -1,5 +1,5 @@
 const express = require('express');
-const {createOrder, getOutgoingOrders, getIncomingOrders, getReceiverPendingOrders, getDriverPendingOrders, acceptOrderByReceiver, declineOrderByReceiver, acceptOrderByDriver, declineOrderByDriver, getDriverOngoingOrders, updateOrderStatus, getCompletedOrders, deleteOrder} = require('../controllers/orderController')
+const {createOrder, getOutgoingOrders, getIncomingOrders, getReceiverPendingOrders, getDriverPendingOrders, acceptOrderByReceiver, declineOrderByReceiver, acceptOrderByDriver, declineOrderByDriver, getDriverOngoingOrders, updateOrderStatus, getCompletedOrders, deleteOrder, trackOrder} = require('../controllers/orderController')
 const router = express.Router();
 
 
@@ -17,5 +17,6 @@ router.put('/accept-driver/:orderId', acceptOrderByDriver);
 router.put('/decline-driver/:orderId', declineOrderByDriver);
 router.put('/update-status/:orderId', updateOrderStatus);
 router.delete('/:orderId', deleteOrder);
+router.get('/track/:trackingNumber', trackOrder);
 
 module.exports = router;
