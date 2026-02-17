@@ -70,7 +70,11 @@ function TrackOrder() {
             </div>
           </Card>
 
-          <DeliveryAnimation status={order.status}/>
+          <DeliveryAnimation 
+          status={order.status}
+          receiverName={order.receiver?.username}
+          senderName={order.sender?.username}/>
+          <br />
 
           {/* Order Timeline */}
           <Card title="Order Timeline" className="mb-4">

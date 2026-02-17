@@ -3,15 +3,17 @@ import { Typography } from 'antd';
 
 const { Text } = Typography
 
-const DeliveryAnimation = ({ status }) => {
+const DeliveryAnimation = ({ status, receiverName, senderName }) => {
   const getAnimationState = () => {
     switch(status) {
       case 'pending':
-        return { progress: 5, message: 'Assigning a Delivery Partner...', theme: '#f39c12' };
+        return { progress: 0, message: 'Assigning a Delivery Partner...', theme: '#f39c12' };
+      case 'driver-pending':
+        return { progress: 0, message: 'Assigning a Driver...', theme: '#11411d' };
       case 'accepted':
-        return { progress: 25, message: 'Driver is heading to pickup!', theme: '#3498db' };
+        return { progress: 5, message: 'Driver is heading to pickup!', theme: '#3498db' };
       case 'in-transit':
-        return { progress: 65, message: 'On the way to your destination!', theme: '#2ecc71' };
+        return { progress: 60, message: 'On the way to your destination!', theme: '#2ecc71' };
       case 'completed':
         return { progress: 100, message: 'Success! Package Delivered.', theme: '#1abc9c' };
       default:
@@ -85,7 +87,7 @@ const DeliveryAnimation = ({ status }) => {
       {/* Pickup Marker */}
       <div style={{ position: 'absolute', bottom: '140px', left: '10%', textAlign: 'center' }}>
         <div style={{ fontSize: '50px', filter: 'drop-shadow(0 5px 5px rgba(0,0,0,0.3))' }}>🏠</div>
-        <div style={labelStyle}>Origin</div>
+        <div style={labelStyle}>{senderName}</div>
       </div>
 
       {/* Destination Marker */}
@@ -118,7 +120,7 @@ const DeliveryAnimation = ({ status }) => {
                 📍
          </div>
 
-    <div style={labelStyle}>Destination</div>
+    <div style={labelStyle}>{receiverName}</div>
     </div>
 
 
