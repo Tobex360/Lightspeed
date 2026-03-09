@@ -1,141 +1,89 @@
-import React from 'react'
-import { useEffect } from 'react'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Input, Button, Form, message, Table, Tag, Modal, Divider, Descriptions} from 'antd'
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons'
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { 
+  Button, Table, Tag, Modal, Divider, Descriptions, 
+  Tabs, Card, Statistic, Row, Col, Typography, Space, Empty, message 
+} from 'antd';
+import { 
+  EyeOutlined, PlusOutlined, ShoppingOutlined, 
+  ArrowUpOutlined, ArrowDownOutlined, CheckCircleOutlined 
+} from '@ant-design/icons';
 
+const { Title, Text } = Typography;
 
+function Uhome() {
+  const [firstname, setFirstname] = useState("");
+  const [userId, setUserId] = useState("");
+  const [outgoingOrders, setOutgoingOrders] = useState([]);
+  const [incomingOrders, setIncomingOrders] = useState([]);
+  const [receiverPendingOrders, setReceiverPendingOrders] = useState([]);
+  const [completedOrders, setCompletedOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [completedLoading, setCompletedLoading] = useState(false);
+  const [deleting, setDeleting] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
-
-
-function uhome() {
-  const [username, setUsername] = useState("")
-  const [firstname, setFirstname] = useState("")
-  const [lastname, setLastname] = useState("")
-  const [userId, setUserId] = useState("")
-  const [outgoingOrders, setOutgoingOrders] = useState([])
-  const [incomingOrders, setIncomingOrders] = useState([])
-  const [receiverPendingOrders, setReceiverPendingOrders] = useState([])
-  const [completedOrders, setCompletedOrders] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [completedLoading, setCompletedLoading] = useState(false)
-  const [deleting, setDeleting] = useState({})
-
-  // modal states
-
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [selectedOrder, setSelectedOrder] = useState(null)
-
-  useEffect(()=>{
+  useEffect(() => {
     const user = localStorage.getItem('user');
-
-    if(user){
+    if (user) {
       const userData = JSON.parse(user);
-      setUsername(userData.username || 'User');
       setFirstname(userData.firstname || 'User');
-      setLastname(userData.lastname || 'User');
       setUserId(userData.userid || '');
     }
-  },[])
+  }, []);
 
-  useEffect(()=>{
-    if(userId){
+  useEffect(() => {
+    if (userId) {
       fetchOutgoingOrders();
       fetchIncomingOrders();
       fetchReceiverPendingOrders();
       fetchCompletedOrders();
     }
-  }, [userId])
+  }, [userId]);
 
+  // Fetch functions
   const fetchOutgoingOrders = async () => {
     setLoading(true);
     try {
-      console.log('Fetching outgoing orders for userId:', userId);
       const response = await fetch(`http://localhost:7000/order/outgoing/${userId}`);
       const data = await response.json();
-      console.log('Outgoing Response:', data);
-      if(data.orders){
+      if (data.orders) {
         setOutgoingOrders(data.orders);
-        console.log('Outgoing orders loaded:', data.orders);
-      } else {
-        console.log('No outgoing orders in response');
       }
     } catch (error) {
-      console.log('Error fetching outgoing orders:', error);
+      console.error('Error fetching outgoing orders:', error);
       message.error('Failed to fetch outgoing orders');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const fetchIncomingOrders = async () => {
     try {
-      console.log('Fetching incoming orders for userId:', userId);
       const response = await fetch(`http://localhost:7000/order/incoming/${userId}`);
       const data = await response.json();
-      console.log('Incoming Response:', data);
-      if(data.orders){
+      if (data.orders) {
         setIncomingOrders(data.orders);
-        console.log('Incoming orders loaded:', data.orders);
-      } else {
-        console.log('No incoming orders in response');
       }
     } catch (error) {
-      console.log('Error fetching incoming orders:', error);
+      console.error('Error fetching incoming orders:', error);
       message.error('Failed to fetch incoming orders');
     }
-  }
+  };
 
   const fetchReceiverPendingOrders = async () => {
     try {
-      console.log('Fetching receiver pending orders for userId:', userId);
       const response = await fetch(`http://localhost:7000/order/receiver-pending/${userId}`);
       const data = await response.json();
-      console.log('Receiver Pending Response:', data);
-      if(data.orders){
+      if (data.orders) {
         setReceiverPendingOrders(data.orders);
-        console.log('Receiver pending orders loaded:', data.orders);
-      } else {
-        console.log('No pending orders in response');
       }
     } catch (error) {
-      console.log('Error fetching receiver pending orders:', error);
+      console.error('Error fetching receiver pending orders:', error);
       message.error('Failed to fetch pending orders');
     }
-  }
-
-  const handleAcceptOrder = async (orderId) => {
-    try {
-      const response = await fetch(`http://localhost:7000/order/accept-receiver/${orderId}`, {
-        method: 'PUT'
-      });
-      const data = await response.json();
-      if(data.order){
-        message.success('Order accepted');
-        fetchReceiverPendingOrders();
-      }
-    } catch (error) {
-      console.log('Error accepting order:', error);
-      message.error('Failed to accept order');
-    }
-  }
-
-  const handleDeclineOrder = async (orderId) => {
-    try {
-      const response = await fetch(`http://localhost:7000/order/decline-receiver/${orderId}`, {
-        method: 'PUT'
-      });
-      const data = await response.json();
-      if(data.order){
-        message.success('Order declined');
-        fetchReceiverPendingOrders();
-      }
-    } catch (error) {
-      console.log('Error declining order:', error);
-      message.error('Failed to decline order');
-    }
-  }
+  };
 
   const fetchCompletedOrders = async () => {
     setCompletedLoading(true);
@@ -146,12 +94,45 @@ function uhome() {
         setCompletedOrders(data.orders);
       }
     } catch (error) {
-      console.log('Error fetching completed orders:', error);
+      console.error('Error fetching completed orders:', error);
       message.error('Failed to fetch completed orders');
     } finally {
       setCompletedLoading(false);
     }
-  }
+  };
+
+  // Handler functions
+  const handleAcceptOrder = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:7000/order/accept-receiver/${orderId}`, {
+        method: 'PUT'
+      });
+      const data = await response.json();
+      if (data.order) {
+        message.success('Order accepted');
+        fetchReceiverPendingOrders();
+      }
+    } catch (error) {
+      console.error('Error accepting order:', error);
+      message.error('Failed to accept order');
+    }
+  };
+
+  const handleDeclineOrder = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:7000/order/decline-receiver/${orderId}`, {
+        method: 'PUT'
+      });
+      const data = await response.json();
+      if (data.order) {
+        message.success('Order declined');
+        fetchReceiverPendingOrders();
+      }
+    } catch (error) {
+      console.error('Error declining order:', error);
+      message.error('Failed to decline order');
+    }
+  };
 
   const handleDeleteOrder = async (orderId) => {
     setDeleting(prev => ({ ...prev, [orderId]: true }));
@@ -165,175 +146,81 @@ function uhome() {
         fetchCompletedOrders();
       }
     } catch (error) {
-      console.log('Error deleting order:', error);
+      console.error('Error deleting order:', error);
       message.error('Failed to delete order');
     } finally {
       setDeleting(prev => ({ ...prev, [orderId]: false }));
     }
-  }
+  };
 
-  // View order details
-
-  const handleViewDetails = (order)=>{
+  const handleViewDetails = (order) => {
     setSelectedOrder(order);
     setIsModalVisible(true);
-  }
+  };
 
-  const handleModalClose = ()=>{
+  const handleModalClose = () => {
     setIsModalVisible(false);
     setSelectedOrder(null);
-  }
+  };
 
-  const outgoingColumns = [
-    {
-      title: 'Package Name',
-      dataIndex: 'packageName',
-      key: 'packageName',
+  const statusColorMap = {
+    'pending': 'gold',
+    'accepted': 'blue',
+    'in-transit': 'cyan',
+    'completed': 'green',
+    'cancelled': 'red'
+  };
+
+  // Common columns
+  const commonColumns = (type) => [
+    { 
+      title: 'Package', 
+      dataIndex: 'packageName', 
+      key: 'packageName', 
+      render: (text) => <b>{text}</b> 
     },
-    {
-      title: 'Receiver',
-      dataIndex: ['receiver', 'username'],
-      key: 'receiver',
+    { 
+      title: type === 'outgoing' ? 'Receiver' : 'Sender', 
+      dataIndex: [type === 'outgoing' ? 'receiver' : 'sender', 'username'], 
+      key: 'user' 
     },
-    {
-      title: 'Size',
-      dataIndex: 'size',
-      key: 'size',
+    { 
+      title: 'Tracking', 
+      dataIndex: 'trackingNumber', 
+      key: 'trackingNumber', 
+      render: (num) => <Link to={`/track/${num}`}><Tag color="blue">{num}</Tag></Link> 
     },
-    {
-      title: 'Driver',
-      dataIndex: ['driver', 'username'],
-      key: 'driver',
-      render: (text) => text || 'Unassigned'
+    { 
+      title: 'Status', 
+      dataIndex: 'status', 
+      key: 'status', 
+      render: (s) => <Tag color={statusColorMap[s]}>{s.toUpperCase()}</Tag> 
     },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => {
-        const colorMap = {
-          'pending': 'gold',
-          'accepted': 'blue',
-          'in-transit': 'cyan',
-          'completed': 'green',
-          'cancelled': 'red'
-        };
-        return <Tag color={colorMap[status] || 'default'}>{status}</Tag>
-      }
-    },
-    {
-      title: 'Tracking Number',
-      dataIndex: 'trackingNumber',
-      key: 'trackingNumber',
-      render: (trackingNumber) => (
-        <Link to={`/track/${trackingNumber}`} style={{ color: '#1890ff' }}>
-          {trackingNumber}
-        </Link>
-      )
-    },
-    {
-      title:'Action',
-      key: 'action',
-      render: (_, record) =>(
-        <Button
-        type='link'
-        icon={<EyeOutlined />}
-        onClick={()=> handleViewDetails(record)}
-        >
-          View Details
+    { 
+      title: 'Action', 
+      key: 'action', 
+      render: (_, record) => (
+        <Button type="text" icon={<EyeOutlined />} onClick={() => handleViewDetails(record)}>
+          Details
         </Button>
       )
     }
   ];
 
-  const incomingColumns = [
-    {
-      title: 'Package Name',
-      dataIndex: 'packageName',
-      key: 'packageName',
-    },
-    {
-      title: 'Sender',
-      dataIndex: ['sender', 'username'],
-      key: 'sender',
-    },
-    {
-      title: 'Size',
-      dataIndex: 'size',
-      key: 'size',
-    },
-    {
-      title: 'Driver',
-      dataIndex: ['driver', 'username'],
-      key: 'driver',
-      render: (text) => text || 'Unassigned'
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => {
-        const colorMap = {
-          'pending': 'gold',
-          'accepted': 'blue',
-          'in-transit': 'cyan',
-          'completed': 'green',
-          'cancelled': 'red'
-        };
-        return <Tag color={colorMap[status] || 'default'}>{status}</Tag>
-      }
-    },
-    {
-      title: 'Tracking Number',
-      dataIndex: 'trackingNumber',
-      key: 'trackingNumber',
-      render: (trackingNumber) => (
-        <Link to={`/track/${trackingNumber}`} style={{ color: '#1890ff' }}>
-          {trackingNumber}
-        </Link>
-      )
-    },
-    {
-      title:'Action',
-      key: 'action',
-      render: (_, record) =>(
-        <Button
-        type='link'
-        icon={<EyeOutlined />}
-        onClick={()=> handleViewDetails(record)}
-        >
-          View Details
-        </Button>
-      )
-    }
-  ];
-
+  // Receiver pending columns
   const receiverPendingColumns = [
-    {
-      title: 'Package Name',
-      dataIndex: 'packageName',
-      key: 'packageName',
-    },
-    {
-      title: 'Sender',
-      dataIndex: ['sender', 'username'],
-      key: 'sender',
-    },
-    {
-      title: 'Size',
-      dataIndex: 'size',
-      key: 'size',
-    },
+    { title: 'Package', dataIndex: 'packageName', key: 'packageName', render: (text) => <b>{text}</b> },
+    { title: 'Sender', dataIndex: ['sender', 'username'], key: 'sender' },
+    { title: 'Size', dataIndex: 'size', key: 'size' },
     {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
-        <span>
+        <Space>
           <Button 
             type='primary' 
             size='small'
             onClick={() => handleAcceptOrder(record._id)}
-            style={{marginRight: '10px'}}
           >
             Accept
           </Button>
@@ -344,272 +231,258 @@ function uhome() {
           >
             Decline
           </Button>
-          <Button
-            type='link'
+          <Button 
+            type='link' 
             size='small'
             icon={<EyeOutlined />}
-            onClick={()=> handleViewDetails(record)}
-            >
-              View Details
+            onClick={() => handleViewDetails(record)}
+          >
+            View
           </Button>
-        </span>
+        </Space>
       ),
     }
   ];
 
+  // Completed columns
   const completedColumns = [
-    {
-      title: 'Package Name',
-      dataIndex: 'packageName',
-      key: 'packageName',
-    },
-    {
-      title: 'Sender',
-      dataIndex: ['sender', 'username'],
-      key: 'sender',
-    },
-    {
-      title: 'Receiver',
-      dataIndex: ['receiver', 'username'],
-      key: 'receiver',
-    },
-    {
-      title: 'Driver',
-      dataIndex: ['driver', 'username'],
-      key: 'driver',
-      render: (text) => text || 'N/A'
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => {
-        const colorMap = {
-          'pending': 'gold',
-          'accepted': 'blue',
-          'in-transit': 'cyan',
-          'completed': 'green',
-          'cancelled': 'red'
-        };
-        return <Tag color={colorMap[status] || 'default'}>{status}</Tag>
-      }
-    },
-    {
-      title: 'Tracking Number',
-      dataIndex: 'trackingNumber',
-      key: 'trackingNumber',
-      render: (trackingNumber) => (
-        <Link to={`/track/${trackingNumber}`} style={{ color: '#1890ff' }}>
-          {trackingNumber}
-        </Link>
-      )
-    },
+    { title: 'Package', dataIndex: 'packageName', key: 'packageName' },
+    { title: 'Sender', dataIndex: ['sender', 'username'], key: 'sender' },
+    { title: 'Receiver', dataIndex: ['receiver', 'username'], key: 'receiver' },
+    { title: 'Status', dataIndex: 'status', key: 'status', render: (s) => <Tag color="green">{s}</Tag> },
     {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
-        <Button
-          danger
-          size='small'
-          loading={deleting[record._id]}
-          onClick={() => handleDeleteOrder(record._id)}
-        >
-          Delete
-        </Button>
+        <Space>
+          <Button
+            danger
+            size='small'
+            loading={deleting[record._id]}
+            onClick={() => handleDeleteOrder(record._id)}
+          >
+            Delete
+          </Button>
+          <Button 
+            type='link' 
+            icon={<EyeOutlined />}
+            onClick={() => handleViewDetails(record)}
+          >
+            View
+          </Button>
+        </Space>
       ),
-    },
-    {
-      title:'View Details',
-      key: 'action',
-      render: (_, record) =>(
-        <Button
-        type='link'
-        icon={<EyeOutlined />}
-        onClick={()=> handleViewDetails(record)}
-        >
-          View Details
-        </Button>
-      )
     }
   ];
 
+  const tabItems = [
+    {
+      key: '1',
+      label: `Pending (${receiverPendingOrders.length})`,
+      children: <Table 
+        columns={receiverPendingColumns} 
+        dataSource={receiverPendingOrders.map(o => ({...o, key: o._id}))} 
+        loading={loading} 
+        pagination={{ pageSize: 10 }}
+      />,
+    },
+    {
+      key: '2',
+      label: `Outgoing (${outgoingOrders.length})`,
+      children: <Table 
+        columns={commonColumns('outgoing')} 
+        dataSource={outgoingOrders.map(o => ({...o, key: o._id}))} 
+        loading={loading} 
+        pagination={{ pageSize: 10 }}
+      />,
+    },
+    {
+      key: '3',
+      label: `Incoming (${incomingOrders.length})`,
+      children: <Table 
+        columns={commonColumns('incoming')} 
+        dataSource={incomingOrders.map(o => ({...o, key: o._id}))} 
+        loading={loading} 
+        pagination={{ pageSize: 10 }}
+      />,
+    },
+    {
+      key: '4',
+      label: `Completed (${completedOrders.length})`,
+      children: <Table 
+        columns={completedColumns} 
+        dataSource={completedOrders.map(o => ({...o, key: o._id}))} 
+        loading={completedLoading} 
+        pagination={{ pageSize: 10 }}
+      />,
+    },
+  ];
+
   return (
-    <><br />
-    <div className='container'>
-      <div className='row justify-content-center'>
-        <h2>Hello, {firstname} 👋</h2>
-      </div>
-    </div><br /><hr />
+    <div style={{ padding: '40px', background: '#f0f2f5', minHeight: '100vh' }}>
+      {/* Header Section */}
+      <Row gutter={[24, 24]} align="middle" justify="space-between" style={{ marginBottom: '32px' }}>
+        <Col>
+          <Title level={2} style={{ margin: 0 }}>Welcome back, {firstname} 👋</Title>
+          <Text type="secondary">Manage your shipments and track deliveries in real-time.</Text>
+        </Col>
+        <Col>
+          <Link to={'/ucreate'}>
+            <Button 
+              size='large' 
+              type='primary' 
+              icon={<PlusOutlined />} 
+              style={{ height: '50px', fontWeight: 'bold' }}
+            >
+              Create New Shipment
+            </Button>
+          </Link>
+        </Col>
+      </Row>
 
-    <div className='container'>
-      <div className='row'>
-        <div className='col-md-14'>
-          <div className=''>
-            <Link to={'/ucreate'}><Button size='large' type='primary' icon={<PlusOutlined />} shape="round" style={{ height: '50px', padding: '0 30px' }}>New Shipment</Button></Link>
+      {/* Quick Stats Section */}
+      <Row gutter={16} style={{ marginBottom: '32px' }}>
+        <Col xs={24} sm={12} lg={6}>
+          <Card variant={false} hoverable>
+            <Statistic 
+              title="Outgoing" 
+              value={outgoingOrders.length} 
+              prefix={<ArrowUpOutlined />} 
+              styles={{ content: { color: '#3f8600'} }} 
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card variant={false} hoverable>
+            <Statistic 
+              title="Incoming" 
+              value={incomingOrders.length} 
+              prefix={<ArrowDownOutlined />} 
+              styles={{ content: { color: '#cf1322'} }} 
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card variant={false} hoverable>
+            <Statistic 
+              title="Awaiting You" 
+              value={receiverPendingOrders.length} 
+              prefix={<ShoppingOutlined />} 
+              styles={{ content: { color: '#faad14'} }} 
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card variant={false} hoverable>
+            <Statistic 
+              title="Completed" 
+              value={completedOrders.length} 
+              prefix={<CheckCircleOutlined />} 
+              styles={{ content: { color: '#52c41a'} }} 
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Main Content Card */}
+      <Card variant={false} style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+        <Tabs 
+          defaultActiveKey="1" 
+          items={tabItems} 
+          size="large" 
+        />
+      </Card>
+
+      {/* Details Modal */}
+      <Modal
+        title={<Title level={4}>Order Details</Title>}
+        open={isModalVisible}
+        onCancel={handleModalClose}
+        footer={[<Button key="close" type='primary' onClick={handleModalClose}>Close</Button>]}
+        width={800}
+      >
+        {selectedOrder ? (
+          <div style={{ maxHeight: '60vh', overflowY: 'auto', paddingRight: '10px' }}>
+            <Divider orientation="left">Package Information</Divider>
+            <Descriptions variant column={2} size="small">
+              <Descriptions.Item label="Package Name" span={2}>
+                {selectedOrder.packageName}
+              </Descriptions.Item>
+              <Descriptions.Item label="Size">
+                {selectedOrder.size}
+              </Descriptions.Item>
+              <Descriptions.Item label="Tracking Number">
+                <Tag color="blue">{selectedOrder.trackingNumber}</Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="Description" span={2}>
+                {selectedOrder.description || 'No description'}
+              </Descriptions.Item>
+              <Descriptions.Item label="Status" span={2}>
+                <Tag color={statusColorMap[selectedOrder.status]}>
+                  {selectedOrder.status?.toUpperCase()}
+                </Tag>
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Divider orientation="left">Sender Information</Divider>
+            <Descriptions variant column={2} size="small">
+              <Descriptions.Item label="Name" span={2}>
+                {selectedOrder.sender?.firstname} {selectedOrder.sender?.lastname}
+              </Descriptions.Item>
+              <Descriptions.Item label="Username">
+                {selectedOrder.sender?.username}
+              </Descriptions.Item>
+              <Descriptions.Item label="Phone">
+                {selectedOrder.sender?.phonenumber}
+              </Descriptions.Item>
+              <Descriptions.Item label="Email" span={2}>
+                {selectedOrder.sender?.email}
+              </Descriptions.Item>
+              <Descriptions.Item label="Address" span={2}>
+                {selectedOrder.sender?.address?.street}, {selectedOrder.sender?.address?.city}, {selectedOrder.sender?.address?.state}
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Divider orientation="left">Receiver Information</Divider>
+            <Descriptions variant column={2} size="small">
+              <Descriptions.Item label="Name" span={2}>
+                {selectedOrder.receiver?.firstname} {selectedOrder.receiver?.lastname}
+              </Descriptions.Item>
+              <Descriptions.Item label="Username">
+                {selectedOrder.receiver?.username}
+              </Descriptions.Item>
+              <Descriptions.Item label="Phone">
+                {selectedOrder.receiver?.phonenumber}
+              </Descriptions.Item>
+              <Descriptions.Item label="Email" span={2}>
+                {selectedOrder.receiver?.email}
+              </Descriptions.Item>
+              <Descriptions.Item label="Address" span={2}>
+                {selectedOrder.receiver?.address?.street}, {selectedOrder.receiver?.address?.city}, {selectedOrder.receiver?.address?.state}
+              </Descriptions.Item>
+            </Descriptions>
+
+            {selectedOrder.driver && (
+              <>
+                <Divider orientation="left">Driver Information</Divider>
+                <Descriptions variant column={2} size="small">
+                  <Descriptions.Item label="Name" span={2}>
+                    {selectedOrder.driver?.firstname} {selectedOrder.driver?.lastname}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Phone">
+                    {selectedOrder.driver?.phonenumber}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Vehicle">
+                    {selectedOrder.driver?.vehicle}
+                  </Descriptions.Item>
+                </Descriptions>
+              </>
+            )}
           </div>
-        </div>
-      </div>
-    </div><br /><hr />
-
-    <div className='container'>
-      <div className='row'>
-        <div className='col-md-24'>
-          <h3>Pending Orders (Awaiting Your Response)</h3>
-          <Table 
-            columns={receiverPendingColumns} 
-            dataSource={receiverPendingOrders.map((order, index) => ({...order, key: order._id}))}
-            loading={loading}
-            pagination={{pageSize: 10}}
-          />
-        </div>
-      </div>
-    </div><br />
-
-    <div className='container'>
-      <div className='row'>
-        <div className='col-md-24'>
-          <h3>Outgoing Orders</h3>
-          <Table 
-            columns={outgoingColumns} 
-            dataSource={outgoingOrders.map((order, index) => ({...order, key: order._id}))}
-            loading={loading}
-            pagination={{pageSize: 10}}
-          />
-        </div>
-      </div>
-    </div><br />
-
-    <div className='container'>
-      <div className='row'>
-        <div className='col-md-24'>
-          <h3>Incoming Orders</h3>
-          <Table 
-            columns={incomingColumns} 
-            dataSource={incomingOrders.map((order, index) => ({...order, key: order._id}))}
-            loading={loading}
-            pagination={{pageSize: 10}}
-          />
-        </div>
-      </div>
-    </div><br />
-
-    <div className='container'>
-      <div className='row'>
-        <div className='col-md-24'>
-          <h3>Completed Orders</h3>
-          <Table
-            columns={completedColumns}
-            dataSource={completedOrders.map((order) => ({ ...order, key: order._id }))}
-            loading={completedLoading}
-            pagination={{ pageSize: 10 }}
-          />
-        </div>
-      </div>
-    </div><br />
-    <Modal
-    title="Order Details"
-    open={isModalVisible}
-    onCancel={handleModalClose}
-    footer={[
-      <Button key="close" type='primary' onClick={handleModalClose}>
-        Close
-      </Button>
-    ]}
-    width={700}
-    >
-      {selectedOrder && (
-        <>
-          <Divider titlePlacement='left'>Package Information</Divider>
-          <Descriptions bordered column={2}>
-            <Descriptions.Item label="Package Name" >
-              {selectedOrder.packageName}
-            </Descriptions.Item>
-            <Descriptions.Item label="Size">
-              {selectedOrder.size}
-            </Descriptions.Item>
-            <Descriptions.Item label="Description" span={2}>
-              {selectedOrder.description || 'No description provided'}
-            </Descriptions.Item>
-            <Descriptions.Item label="Tracking Number" span={2}>
-              <Tag color="blue">{selectedOrder.trackingNumber}</Tag>
-            </Descriptions.Item>
-          </Descriptions>
-
-          <Divider titlePlacement='left'>Sender Information</Divider>
-          <Descriptions bordered column={2}>
-            <Descriptions.Item label="Name" span={2}>
-              {selectedOrder.sender?.firstname} {selectedOrder.sender?.lastname}
-            </Descriptions.Item>
-            <Descriptions.Item label="Username">
-              {selectedOrder.sender?.username}
-            </Descriptions.Item>
-            <Descriptions.Item label="Phone Number">
-              {selectedOrder.sender?.phonenumber}
-            </Descriptions.Item>
-            <Descriptions.Item label="Email" span={2}>
-              {selectedOrder.sender?.email}
-            </Descriptions.Item>
-            <Descriptions.Item label="Address" span={2}>
-              {selectedOrder.sender?.address?.street}, {selectedOrder.sender?.address?.city}, {selectedOrder.sender?.address?.state}
-            </Descriptions.Item>
-          </Descriptions>
-
-
-          <Divider titlePlacement='left'>Receiver Information</Divider>
-          <Descriptions bordered column={2}>
-            <Descriptions.Item label="Name" span={2}>
-              {selectedOrder.receiver?.firstname} {selectedOrder.receiver?.lastname}
-            </Descriptions.Item>
-            <Descriptions.Item label="Username">
-              {selectedOrder.receiver?.username}
-            </Descriptions.Item>
-            <Descriptions.Item label="Phone Number">
-              {selectedOrder.receiver?.phonenumber}
-            </Descriptions.Item>
-            <Descriptions.Item label="Email" span={2}>
-              {selectedOrder.receiver?.email}
-            </Descriptions.Item>
-            <Descriptions.Item label="Address" span={2}>
-              {selectedOrder.receiver?.address?.street}, {selectedOrder.receiver?.address?.city}, {selectedOrder.receiver?.address?.state}
-            </Descriptions.Item>
-          </Descriptions>
-
-
-          <Divider titlePlacement='left'>Driver Information</Divider>
-          <Descriptions bordered column={2}>
-            <Descriptions.Item label="Name" span={2}>
-              {selectedOrder.driver?.firstname} {selectedOrder.driver?.lastname}
-            </Descriptions.Item>
-            <Descriptions.Item label="Username">
-              {selectedOrder.driver?.username}
-            </Descriptions.Item>
-            <Descriptions.Item label="Phone Number">
-              {selectedOrder.driver?.phonenumber || 'N/A'}
-            </Descriptions.Item>
-            <Descriptions.Item label="Email" span={2}>
-              {selectedOrder.driver?.email || 'N/A'}
-            </Descriptions.Item>
-            <Descriptions.Item label="Vehicle" span={2}>
-              {selectedOrder.driver?.vehicle || 'N/A'}
-            </Descriptions.Item>
-          </Descriptions>
-
-
-          <Divider titlePlacement='left'>Timeline</Divider>
-          <Descriptions bordered column={1}>
-            <Descriptions.Item label="Created At">
-              {new Date(selectedOrder.createdAt).toLocaleString()}
-            </Descriptions.Item>
-            <Descriptions.Item label="Updated At">
-              {new Date(selectedOrder.updatedAt).toLocaleString()}
-            </Descriptions.Item>
-          </Descriptions>
-        </>
-      )}
-
-    </Modal>
-    </>
-  )
+        ) : <Empty description="No order selected" />}
+      </Modal>
+    </div>
+  );
 }
 
-export default uhome
+export default Uhome;
