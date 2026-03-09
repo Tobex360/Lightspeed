@@ -1,57 +1,54 @@
-import React from 'react'
-import { useEffect } from 'react'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Input, Button, Form, message, Table, Tag, Modal, Divider, Descriptions, Select} from 'antd'
-import { EyeOutlined } from '@ant-design/icons'
+import React, { useEffect, useState } from 'react';
+import { 
+  Button, Table, Tag, Modal, Divider, Descriptions, 
+  Select, Card, Tabs, Row, Col, Typography, Space, Statistic, message 
+} from 'antd';
+import { 
+  EyeOutlined, CarOutlined, CheckCircleOutlined, 
+  ClockCircleOutlined, InboxOutlined 
+} from '@ant-design/icons';
 
+const { Title, Text } = Typography;
 
-function dhome() {
-  const [username, setUsername] = useState("")
-  const [firstname, setFirstname] = useState("")
-  const [available, setAvailable] = useState(true)
-  const [lastname, setLastname] = useState("")
-  const [driverId, setDriverId] = useState("")
-  const [pendingOrders, setPendingOrders] = useState([])
-  const [ongoingOrders, setOngoingOrders] = useState([])
-  const [completedOrders, setCompletedOrders] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [ongoingLoading, setOngoingLoading] = useState(false)
-  const [completedLoading, setCompletedLoading] = useState(false)
-  const [statusUpdating, setStatusUpdating] = useState({})
-  const [deleting, setDeleting] = useState({})
+function Dhome() {
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [available, setAvailable] = useState(true);
+  const [driverId, setDriverId] = useState("");
+  const [pendingOrders, setPendingOrders] = useState([]);
+  const [ongoingOrders, setOngoingOrders] = useState([]);
+  const [completedOrders, setCompletedOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [ongoingLoading, setOngoingLoading] = useState(false);
+  const [completedLoading, setCompletedLoading] = useState(false);
+  const [statusUpdating, setStatusUpdating] = useState({});
+  const [deleting, setDeleting] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
-   // modal states
-  
-    const [isModalVisible, setIsModalVisible] = useState(false)
-    const [selectedOrder, setSelectedOrder] = useState(null)
-  
-
-  useEffect(()=>{
+  useEffect(() => {
     const driver = localStorage.getItem('driver');
-
-    if(driver){
+    if (driver) {
       const driverData = JSON.parse(driver);
       console.log('Driver data from localStorage:', driverData);
       setFirstname(driverData.firstname);
-      setUsername(driverData.username);
       setLastname(driverData.lastname);
-      setAvailable(driverData.isOpen)
+      setAvailable(driverData.isOpen);
       const id = driverData.driverid || driverData._id || driverData.userid;
       console.log('Setting driver ID to:', id);
       setDriverId(id || '');
     }
+  }, []);
 
-  },[])
-
-  useEffect(()=>{
-    if(driverId){
+  useEffect(() => {
+    if (driverId) {
       fetchDriverPendingOrders();
       fetchDriverOngoingOrders();
       fetchCompletedOrders();
     }
-  }, [driverId])
+  }, [driverId]);
 
+  // Fetch functions
   const fetchDriverPendingOrders = async () => {
     setLoading(true);
     try {
@@ -59,7 +56,7 @@ function dhome() {
       const response = await fetch(`http://localhost:7000/order/driver-pending/${driverId}`);
       const data = await response.json();
       console.log('Driver Pending Response:', data);
-      if(data.orders){
+      if (data.orders) {
         setPendingOrders(data.orders);
         console.log('Driver pending orders loaded:', data.orders);
       } else {
@@ -71,40 +68,7 @@ function dhome() {
     } finally {
       setLoading(false);
     }
-  }
-
-  const handleAcceptOrder = async (orderId) => {
-    try {
-      const response = await fetch(`http://localhost:7000/order/accept-driver/${orderId}`, {
-        method: 'PUT'
-      });
-      const data = await response.json();
-      if(data.order){
-        message.success('Order accepted');
-        fetchDriverPendingOrders();
-        fetchDriverOngoingOrders();
-      }
-    } catch (error) {
-      console.log('Error accepting order:', error);
-      message.error('Failed to accept order');
-    }
-  }
-
-  const handleDeclineOrder = async (orderId) => {
-    try {
-      const response = await fetch(`http://localhost:7000/order/decline-driver/${orderId}`, {
-        method: 'PUT'
-      });
-      const data = await response.json();
-      if(data.order){
-        message.success('Order declined');
-        fetchDriverPendingOrders();
-      }
-    } catch (error) {
-      console.log('Error declining order:', error);
-      message.error('Failed to decline order');
-    }
-  }
+  };
 
   const fetchDriverOngoingOrders = async () => {
     setOngoingLoading(true);
@@ -125,7 +89,57 @@ function dhome() {
     } finally {
       setOngoingLoading(false);
     }
-  }
+  };
+
+  const fetchCompletedOrders = async () => {
+    setCompletedLoading(true);
+    try {
+      const response = await fetch(`http://localhost:7000/order/completed/${driverId}`);
+      const data = await response.json();
+      if (data.orders) {
+        setCompletedOrders(data.orders);
+      }
+    } catch (error) {
+      console.log('Error fetching completed orders:', error);
+      message.error('Failed to fetch completed orders');
+    } finally {
+      setCompletedLoading(false);
+    }
+  };
+
+  // Handler functions
+  const handleAcceptOrder = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:7000/order/accept-driver/${orderId}`, {
+        method: 'PUT'
+      });
+      const data = await response.json();
+      if (data.order) {
+        message.success('Order accepted');
+        fetchDriverPendingOrders();
+        fetchDriverOngoingOrders();
+      }
+    } catch (error) {
+      console.log('Error accepting order:', error);
+      message.error('Failed to accept order');
+    }
+  };
+
+  const handleDeclineOrder = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:7000/order/decline-driver/${orderId}`, {
+        method: 'PUT'
+      });
+      const data = await response.json();
+      if (data.order) {
+        message.success('Order declined');
+        fetchDriverPendingOrders();
+      }
+    } catch (error) {
+      console.log('Error declining order:', error);
+      message.error('Failed to decline order');
+    }
+  };
 
   const handleStatusChange = async (orderId, newStatus) => {
     setStatusUpdating(prev => ({ ...prev, [orderId]: true }));
@@ -149,23 +163,7 @@ function dhome() {
     } finally {
       setStatusUpdating(prev => ({ ...prev, [orderId]: false }));
     }
-  }
-
-  const fetchCompletedOrders = async () => {
-    setCompletedLoading(true);
-    try {
-      const response = await fetch(`http://localhost:7000/order/completed/${driverId}`);
-      const data = await response.json();
-      if (data.orders) {
-        setCompletedOrders(data.orders);
-      }
-    } catch (error) {
-      console.log('Error fetching completed orders:', error);
-      message.error('Failed to fetch completed orders');
-    } finally {
-      setCompletedLoading(false);
-    }
-  }
+  };
 
   const handleDeleteOrder = async (orderId) => {
     setDeleting(prev => ({ ...prev, [orderId]: true }));
@@ -184,22 +182,19 @@ function dhome() {
     } finally {
       setDeleting(prev => ({ ...prev, [orderId]: false }));
     }
-  }
+  };
 
-
-  // View order details
-
-  const handleViewDetails = (order)=>{
+  const handleViewDetails = (order) => {
     setSelectedOrder(order);
     setIsModalVisible(true);
-  }
+  };
 
-  const handleModalClose = ()=>{
+  const handleModalClose = () => {
     setIsModalVisible(false);
     setSelectedOrder(null);
-  }
+  };
 
-
+  // Table columns
   const driverPendingColumns = [
     {
       title: 'Package Name',
@@ -225,12 +220,11 @@ function dhome() {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
-        <span>
+        <Space>
           <Button 
             type='primary' 
             size='small'
             onClick={() => handleAcceptOrder(record._id)}
-            style={{marginRight: '10px'}}
           >
             Accept
           </Button>
@@ -245,11 +239,11 @@ function dhome() {
             type='link'
             size='small'
             icon={<EyeOutlined />}
-            onClick={()=> handleViewDetails(record)}
-            >
-              View Details
+            onClick={() => handleViewDetails(record)}
+          >
+            View
           </Button>
-        </span>
+        </Space>
       ),
     }
   ];
@@ -282,7 +276,7 @@ function dhome() {
       render: (status, record) => (
         <Select
           value={status}
-          style={{ width: '120px' }}
+          style={{ width: '140px' }}
           onChange={(newStatus) => handleStatusChange(record._id, newStatus)}
           disabled={statusUpdating[record._id]}
           options={[
@@ -294,15 +288,15 @@ function dhome() {
       ),
     },
     {
-      title:'Action',
+      title: 'Action',
       key: 'action',
-      render: (_, record) =>(
+      render: (_, record) => (
         <Button
-        type='link'
-        icon={<EyeOutlined />}
-        onClick={()=> handleViewDetails(record)}
+          type='link'
+          icon={<EyeOutlined />}
+          onClick={() => handleViewDetails(record)}
         >
-          View Details
+          View
         </Button>
       )
     }
@@ -329,106 +323,169 @@ function dhome() {
       dataIndex: 'status',
       key: 'status',
       render: (status) => {
-              const colorMap = {
-                'pending': 'gold',
-                'accepted': 'blue',
-                'in-transit': 'cyan',
-                'completed': 'green',
-                'cancelled': 'red'
-              };
-              return <Tag color={colorMap[status] || 'default'}>{status}</Tag>
-            }
+        const colorMap = {
+          'pending': 'gold',
+          'accepted': 'blue',
+          'in-transit': 'cyan',
+          'completed': 'green',
+          'cancelled': 'red'
+        };
+        return <Tag color={colorMap[status] || 'default'}>{status}</Tag>
+      }
     },
     {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
-        <Button
-          danger
-          size='small'
-          loading={deleting[record._id]}
-          onClick={() => handleDeleteOrder(record._id)}
-        >
-          Delete
-        </Button>
+        <Space>
+          <Button
+            danger
+            size='small'
+            loading={deleting[record._id]}
+            onClick={() => handleDeleteOrder(record._id)}
+          >
+            Delete
+          </Button>
+          <Button
+            type='link'
+            icon={<EyeOutlined />}
+            onClick={() => handleViewDetails(record)}
+          >
+            View
+          </Button>
+        </Space>
       ),
-    },
-    {
-      title:'Action',
-      key: 'action',
-      render: (_, record) =>(
-        <Button
-        type='link'
-        icon={<EyeOutlined />}
-        onClick={()=> handleViewDetails(record)}
-        >
-          View Details
-        </Button>
-      )
     }
   ];
 
+  const tabItems = [
+    {
+      key: '1',
+      label: (
+        <span>
+          <ClockCircleOutlined /> Pending ({pendingOrders.length})
+        </span>
+      ),
+      children: (
+        <Table 
+          columns={driverPendingColumns} 
+          dataSource={pendingOrders.map(o => ({...o, key: o._id}))} 
+          loading={loading}
+          pagination={{ pageSize: 10 }}
+        />
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <span>
+          <CarOutlined /> Ongoing ({ongoingOrders.length})
+        </span>
+      ),
+      children: (
+        <Table 
+          columns={ongoingColumns} 
+          dataSource={ongoingOrders.map(o => ({...o, key: o._id}))} 
+          loading={ongoingLoading}
+          pagination={{ pageSize: 10 }}
+        />
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <span>
+          <CheckCircleOutlined /> Completed ({completedOrders.length})
+        </span>
+      ),
+      children: (
+        <Table 
+          columns={completedColumns} 
+          dataSource={completedOrders.map(o => ({...o, key: o._id}))} 
+          loading={completedLoading}
+          pagination={{ pageSize: 10 }}
+        />
+      ),
+    },
+  ];
+
   return (
-    <><br />
-    <div className='container'>
-      <div className='row justify-content-center'>
-        <h2>Hello, {firstname} {" "}👋{" "}{available?(<Tag color="green">Available</Tag>):(<Tag color="red">Not Available</Tag>)}</h2>
-      </div>
-    </div><br /><hr />
+    <div style={{ padding: '30px', background: '#f5f7f9', minHeight: '100vh' }}>
+      {/* Header Profile Section */}
+      <Card variant={false} style={{ marginBottom: '24px', borderRadius: '15px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+        <Row align="middle" justify="space-between">
+          <Col>
+            <Space orientation="vertical" size={0}>
+              <Title level={2} style={{ margin: 0 }}>Welcome, {firstname}! 👨</Title>
+              <Text type="secondary">You have {ongoingOrders.length} active deliveries today.</Text>
+            </Space>
+          </Col>
+          <Col>
+            <div style={{ textAlign: 'right' }}>
+              <Text strong style={{ display: 'block', marginBottom: '4px' }}>Duty Status</Text>
+              {available ? (
+                <Tag color="green" style={{ padding: '4px 12px', borderRadius: '10px', fontSize: '14px' }}>
+                  ● AVAILABLE FOR WORK
+                </Tag>
+              ) : (
+                <Tag color="red" style={{ padding: '4px 12px', borderRadius: '10px', fontSize: '14px' }}>
+                  ○ OFF DUTY
+                </Tag>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </Card>
 
-    <div className='container'>
-      <div className='row'>
-        <div className='col-md-24'>
-          <h3>Pending Orders (Awaiting Your Response)</h3>
-          <Table 
-            columns={driverPendingColumns} 
-            dataSource={pendingOrders.map((order, index) => ({...order, key: order._id}))}
-            loading={loading}
-            pagination={{pageSize: 10}}
-          />
-        </div>
-      </div>
-    </div><br />
-    
-    <div className='container'>
-      <div className='row'>
-        <div className='col-md-24'>
-          <h3>Ongoing Orders</h3>
-          <Table
-            columns={ongoingColumns}
-            dataSource={ongoingOrders.map((order) => ({ ...order, key: order._id }))}
-            loading={ongoingLoading}
-            pagination={{ pageSize: 10 }}
-          />
-        </div>
-      </div>
-    </div><br />
+      {/* Stats Quick-View */}
+      <Row gutter={16} style={{ marginBottom: '24px' }}>
+        <Col xs={24} sm={8}>
+          <Card variant={false} hoverable>
+            <Statistic 
+              title="Available Jobs" 
+              value={pendingOrders.length} 
+              prefix={<InboxOutlined />} 
+              styles={{ content:{color: '#faad14' }}} 
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={8}>
+          <Card variant={false} hoverable>
+            <Statistic 
+              title="In Transit" 
+              value={ongoingOrders.length} 
+              prefix={<CarOutlined />} 
+              styles={{ content:{color: '#1890ff' }}} 
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={8}>
+          <Card variant={false} hoverable>
+            <Statistic 
+              title="Total Finished" 
+              value={completedOrders.length} 
+              prefix={<CheckCircleOutlined />} 
+              styles={{ content:{color: '#52c41a' }}} 
+            />
+          </Card>
+        </Col>
+      </Row>
 
-    <div className='container'>
-      <div className='row'>
-        <div className='col-md-24'>
-          <h3>Completed Orders</h3>
-          <Table
-            columns={completedColumns}
-            dataSource={completedOrders.map((order) => ({ ...order, key: order._id }))}
-            loading={completedLoading}
-            pagination={{ pageSize: 10 }}
-          />
-        </div>
-      </div>
-    </div><br />
-    <Modal
-        title="Order Details"
+      {/* Main Jobs Workspace */}
+      <Card variant={false} style={{ borderRadius: '15px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+        <Tabs defaultActiveKey="2" items={tabItems} size="large" />
+      </Card>
+
+      {/* Detailed View Modal */}
+      <Modal
+        title={<Title level={4}><EyeOutlined /> Manifest Details</Title>}
         open={isModalVisible}
         onCancel={handleModalClose}
-        footer={[
-          <Button key="close" type='primary' onClick={handleModalClose}>
-            Close
-          </Button>
-        ]}
-        width={700}
-        >
-          {selectedOrder && (
+        footer={[<Button key="close" type='primary' onClick={handleModalClose} size="large">Got it</Button>]}
+        width={800}
+        centered
+      >
+        {selectedOrder && (
             <>
               <Divider titlePlacement='left'>Package Information</Divider>
               <Descriptions bordered column={2}>
@@ -517,10 +574,9 @@ function dhome() {
               </Descriptions>
             </>
           )}
-    
-        </Modal>
-    </>
-    )
+      </Modal>
+    </div>
+  );
 }
 
-export default dhome
+export default Dhome;
