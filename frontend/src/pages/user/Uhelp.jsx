@@ -21,17 +21,38 @@ function Uhelp() {
               <div className="accordion-item">
                 <h2 className="accordion-header" id="headingOne">
                   <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    How Do I Change My Billing Information?
+                    How do I create an order?
                   </button>
                 </h2>
                 <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                   <div className="accordion-body">
-                    <p>To change your billing information, please follow these steps:</p>
+                    <p>To sucessfully create an order Follow these steps</p>
                     <ul>
                       <li>Go to our website and sign in to your account.</li>
-                      <li>Click on your profile picture in the top right corner of the page and select "Account Settings."</li>
-                      <li>Under the "Billing Information" section, click on "Edit."</li>
-                      <li>Make your changes and click on "Save."</li>
+                      <li>Click on "Create new shipment" on the top left on the webpage</li>
+                      <li>Enter Your package details</li>
+                      <li>Enter the receiver's username(must be a valid username)</li>
+                      <li>Select a driver from the list of available drivers</li>
+                      <li>Click on the "create order button"</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="accordion-item">
+                <h2 className="accordion-header" id="headingThree">
+                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    How do I edit my profile?
+                  </button>
+                </h2>
+                <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                  <div className="accordion-body">
+                    <p>To Edit your profile, please follow these steps:</p>
+                    <ul>
+                      <li>Go to our website and sign in to your account.</li>
+                      <li>Click on The Settings Tab on the navigation bar</li>
+                      <li>Edit any field as you see fit</li>
+                      <li>Click on save changes</li>
                     </ul>
                   </div>
                 </div>
@@ -39,30 +60,12 @@ function Uhelp() {
               <div className="accordion-item">
                 <h2 className="accordion-header" id="headingTwo">
                   <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    How Does Payment System Work?
+                    Customer Care
                   </button>
                 </h2>
                 <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                   <div className="accordion-body">
-                    A payment system is a way to transfer money from one person or organization to another. It is a complex process that involves many different parties, including banks, credit card companies, and merchants.
-                  </div>
-                </div>
-              </div>
-              <div className="accordion-item">
-                <h2 className="accordion-header" id="headingThree">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    How Do I Cancel My Account?
-                  </button>
-                </h2>
-                <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                  <div className="accordion-body">
-                    <p>To Edit your account, please follow these steps:</p>
-                    <ul>
-                      <li>Go to our website and sign in to your account.</li>
-                      <li>Click on The Settings Tab on the navigation bar</li>
-                      <li>Edit any field as you see fit</li>
-                      <li>Click on save changes</li>
-                    </ul>
+                    You can contact us at 08139509185 or send us an email at Tobex360@gmail.com
                   </div>
                 </div>
               </div>
