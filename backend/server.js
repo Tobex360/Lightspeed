@@ -17,6 +17,7 @@ const DB_URL = process.env.DB_URL;
 
 app.use(cors({
     origin:['https://lightspeed-red.vercel.app/'],
+    methods: ["GET","POST","PUT","DELETE"],
     credentials: true
 }));
 app.use(express.json());
