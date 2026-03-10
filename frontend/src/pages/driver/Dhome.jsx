@@ -26,6 +26,8 @@ function Dhome() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+
   useEffect(() => {
     const driver = localStorage.getItem('driver');
     if (driver) {
@@ -53,7 +55,7 @@ function Dhome() {
     setLoading(true);
     try {
       console.log('Fetching driver pending orders for driverId:', driverId);
-      const response = await fetch(`http://localhost:7000/order/driver-pending/${driverId}`);
+      const response = await fetch(`${API_URL}/order/driver-pending/${driverId}`);
       const data = await response.json();
       console.log('Driver Pending Response:', data);
       if (data.orders) {
@@ -74,7 +76,7 @@ function Dhome() {
     setOngoingLoading(true);
     try {
       console.log('Fetching driver ongoing orders for driverId:', driverId);
-      const response = await fetch(`http://localhost:7000/order/driver-ongoing/${driverId}`);
+      const response = await fetch(`${API_URL}/order/driver-ongoing/${driverId}`);
       const data = await response.json();
       console.log('Driver Ongoing Response:', data);
       if (data.orders) {
@@ -94,7 +96,7 @@ function Dhome() {
   const fetchCompletedOrders = async () => {
     setCompletedLoading(true);
     try {
-      const response = await fetch(`http://localhost:7000/order/completed/${driverId}`);
+      const response = await fetch(`${API_URL}/order/completed/${driverId}`);
       const data = await response.json();
       if (data.orders) {
         setCompletedOrders(data.orders);
@@ -110,7 +112,7 @@ function Dhome() {
   // Handler functions
   const handleAcceptOrder = async (orderId) => {
     try {
-      const response = await fetch(`http://localhost:7000/order/accept-driver/${orderId}`, {
+      const response = await fetch(`${API_URL}/order/accept-driver/${orderId}`, {
         method: 'PUT'
       });
       const data = await response.json();
@@ -127,7 +129,7 @@ function Dhome() {
 
   const handleDeclineOrder = async (orderId) => {
     try {
-      const response = await fetch(`http://localhost:7000/order/decline-driver/${orderId}`, {
+      const response = await fetch(`${API_URL}/order/decline-driver/${orderId}`, {
         method: 'PUT'
       });
       const data = await response.json();
@@ -144,7 +146,7 @@ function Dhome() {
   const handleStatusChange = async (orderId, newStatus) => {
     setStatusUpdating(prev => ({ ...prev, [orderId]: true }));
     try {
-      const response = await fetch(`http://localhost:7000/order/update-status/${orderId}`, {
+      const response = await fetch(`${API_URL}/order/update-status/${orderId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -168,7 +170,7 @@ function Dhome() {
   const handleDeleteOrder = async (orderId) => {
     setDeleting(prev => ({ ...prev, [orderId]: true }));
     try {
-      const response = await fetch(`http://localhost:7000/order/${orderId}`, {
+      const response = await fetch(`${API_URL}/order/${orderId}`, {
         method: 'DELETE'
       });
       const data = await response.json();

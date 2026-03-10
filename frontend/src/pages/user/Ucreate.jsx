@@ -13,6 +13,8 @@ function Ucreate() {
   const [drivers, setDrivers] = useState([]);
   const [loadingDrivers, setLoadingDrivers] = useState(true);
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+
   const navigate = useNavigate();
 
     // Fetch available drivers when component mounts
@@ -24,7 +26,7 @@ function Ucreate() {
     const fetchAvailableDrivers = async ()=>{
         try{
             setLoadingDrivers(true);
-            const response = await axios.get(`http://localhost:7000/driver/available`);
+            const response = await axios.get(`${API_URL}/driver/available`);
             setDrivers(response.data.drivers || [])
         }catch(error){
             console.log(error)
@@ -43,7 +45,7 @@ function Ucreate() {
             console.log('Sender user:', user);
 
             // Resolve receiver username to user ID
-            const receiverResponse = await axios.get(`http://localhost:7000/user/username/${values.receiver}`);
+            const receiverResponse = await axios.get(`${API_URL}/user/username/${values.receiver}`);
             const receiverId = receiverResponse.data.user._id;
             console.log('Receiver ID:', receiverId);
 
@@ -57,7 +59,7 @@ function Ucreate() {
             }
             console.log('Order data being sent:', orderData);
 
-            const response = await axios.post(`http://localhost:7000/order/create`, orderData);
+            const response = await axios.post(`${API_URL}/order/create`, orderData);
 
             message.success('Order created successfully!');
             form.resetFields();

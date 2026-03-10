@@ -10,6 +10,8 @@ function Usetting() {
   const [userData, setUserData] = useState(null)
   const navigate = useNavigate()
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+
   useEffect(() => {
     // Check if user is logged in
     const user = localStorage.getItem('user')
@@ -59,7 +61,7 @@ const handleSubmit = async (values) => {
     }
 
     const response = await axios.put(
-      `http://localhost:7000/user/edit/${userData.userid}`,
+      `${API_URL}/user/edit/${userData.userid}`,
       payload
     )
 

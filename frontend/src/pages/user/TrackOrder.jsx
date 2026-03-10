@@ -12,6 +12,8 @@ function TrackOrder() {
   const [driverLocation, setDriverLocation] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+
   useEffect(() => {
     fetchOrderDetails();
   }, [trackingNumber]);
@@ -19,7 +21,7 @@ function TrackOrder() {
 
   const fetchOrderDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:7000/order/track/${trackingNumber}`);
+      const response = await axios.get(`${API_URL}/order/track/${trackingNumber}`);
       setOrder(response.data.order);
       setDriverLocation(response.data.order.driverLocation);
       setLoading(false);

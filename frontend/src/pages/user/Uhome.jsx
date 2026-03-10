@@ -24,6 +24,8 @@ function Uhome() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+
   useEffect(() => {
     const user = localStorage.getItem('user');
     if (user) {
@@ -46,7 +48,7 @@ function Uhome() {
   const fetchOutgoingOrders = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:7000/order/outgoing/${userId}`);
+      const response = await fetch(`${API_URL}/order/outgoing/${userId}`);
       const data = await response.json();
       if (data.orders) {
         setOutgoingOrders(data.orders);
@@ -61,7 +63,7 @@ function Uhome() {
 
   const fetchIncomingOrders = async () => {
     try {
-      const response = await fetch(`http://localhost:7000/order/incoming/${userId}`);
+      const response = await fetch(`${API_URL}/order/incoming/${userId}`);
       const data = await response.json();
       if (data.orders) {
         setIncomingOrders(data.orders);
@@ -74,7 +76,7 @@ function Uhome() {
 
   const fetchReceiverPendingOrders = async () => {
     try {
-      const response = await fetch(`http://localhost:7000/order/receiver-pending/${userId}`);
+      const response = await fetch(`${API_URL}/order/receiver-pending/${userId}`);
       const data = await response.json();
       if (data.orders) {
         setReceiverPendingOrders(data.orders);
@@ -88,7 +90,7 @@ function Uhome() {
   const fetchCompletedOrders = async () => {
     setCompletedLoading(true);
     try {
-      const response = await fetch(`http://localhost:7000/order/completed/${userId}`);
+      const response = await fetch(`${API_URL}/order/completed/${userId}`);
       const data = await response.json();
       if (data.orders) {
         setCompletedOrders(data.orders);
@@ -104,7 +106,7 @@ function Uhome() {
   // Handler functions
   const handleAcceptOrder = async (orderId) => {
     try {
-      const response = await fetch(`http://localhost:7000/order/accept-receiver/${orderId}`, {
+      const response = await fetch(`${API_URL}/order/accept-receiver/${orderId}`, {
         method: 'PUT'
       });
       const data = await response.json();
@@ -120,7 +122,7 @@ function Uhome() {
 
   const handleDeclineOrder = async (orderId) => {
     try {
-      const response = await fetch(`http://localhost:7000/order/decline-receiver/${orderId}`, {
+      const response = await fetch(`${API_URL}/order/decline-receiver/${orderId}`, {
         method: 'PUT'
       });
       const data = await response.json();
@@ -137,7 +139,7 @@ function Uhome() {
   const handleDeleteOrder = async (orderId) => {
     setDeleting(prev => ({ ...prev, [orderId]: true }));
     try {
-      const response = await fetch(`http://localhost:7000/order/${orderId}`, {
+      const response = await fetch(`${API_URL}/order/${orderId}`, {
         method: 'DELETE'
       });
       const data = await response.json();

@@ -11,6 +11,8 @@ function Dsetting() {
   const [isAvailable, setIsAvailable] = useState(false)
   const navigate = useNavigate()
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+
   useEffect(() => {
     // Check if user is logged in
     const user = localStorage.getItem('driver')
@@ -65,7 +67,7 @@ function Dsetting() {
       }
 
       const response = await axios.put(
-        `http://localhost:7000/driver/edit/${userData.userid}`,
+        `${API_URL}/driver/edit/${userData.userid}`,
         payload
       )
 
