@@ -40,12 +40,12 @@ function Uhelp() {
               </div>
               
               <div className="accordion-item">
-                <h2 className="accordion-header" id="headingThree">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <h2 className="accordion-header" id="headingTwo">
+                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     How do I edit my profile?
                   </button>
                 </h2>
-                <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                   <div className="accordion-body">
                     <p>To Edit your profile, please follow these steps:</p>
                     <ul>
@@ -58,12 +58,32 @@ function Uhelp() {
                 </div>
               </div>
               <div className="accordion-item">
-                <h2 className="accordion-header" id="headingTwo">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <h2 className="accordion-header" id="headingThree">
+                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Tracking Order?
+                  </button>
+                </h2>
+                <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                  <div className="accordion-body">
+                    <p>You can track your orders using the order status:</p>
+                    <ul>
+                      <li>"Pending" means the Recevier is yet to accept the order.</li>
+                      <li>"driver-pending" means the driver is yet </li>to accept the order.
+                      <li>"accepted" means the driver has agreed to take the order</li>
+                      <li>"in-transit" means the driver has collected the order from the Sender and is now on his way to the reciver</li>
+                      <li>"complete" means the driver has deliverd the order to the recevier successfully</li>
+                      <li>"cancelled" means either the recevier or the driver has rejected the order</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="accordion-item">
+                <h2 className="accordion-header" id="headingFour">
+                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                     Customer Care
                   </button>
                 </h2>
-                <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div id="collapseFour" className="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
                   <div className="accordion-body">
                     You can contact us at 08139509185 or send us an email at Tobex360@gmail.com
                   </div>

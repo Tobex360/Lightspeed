@@ -21,51 +21,73 @@ function Dhelp() {
                <div className="accordion-item">
                  <h2 className="accordion-header" id="headingOne">
                    <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                     How Do I Change My Billing Information?
+                     How Does this work?
                    </button>
                  </h2>
                  <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                    <div className="accordion-body">
-                     <p>To change your billing information, please follow these steps:</p>
+                     <p>These are the steps you are expexted to take to work with us</p>
                      <ul>
-                       <li>Go to our website and sign in to your account.</li>
-                       <li>Click on your profile picture in the top right corner of the page and select "Account Settings."</li>
-                       <li>Under the "Billing Information" section, click on "Edit."</li>
-                       <li>Make your changes and click on "Save."</li>
+                       <li>Whenever you are available to work go into "settings" page and toggle Available field to "Available"</li>
+                       <li>If you get assigned job it will show up in your pending table</li>
+                       <li>Click on the "view" button in the action column to see the details of the job</li>
+                       <li>You are expexted to call both the sender and the recevier to confirm the details of the job</li>
+                       <li>If there is an issue and you cannot complete the job you can click on the "decline" button to cancel the job</li>
+                       <li>If you will be able to complete the job click on the "accept" buton to start the job</li>
                      </ul>
                    </div>
                  </div>
                </div>
+              
                <div className="accordion-item">
                  <h2 className="accordion-header" id="headingTwo">
                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                     How Does Payment System Work?
+                     Tracking Orders?
                    </button>
                  </h2>
-                 <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                 <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                    <div className="accordion-body">
-                     A payment system is a way to transfer money from one person or organization to another. It is a complex process that involves many different parties, including banks, credit card companies, and merchants.
-                   </div>
-                 </div>
-               </div>
-               <div className="accordion-item">
-                 <h2 className="accordion-header" id="headingThree">
-                   <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                     How Do I Cancel My Account?
-                   </button>
-                 </h2>
-                 <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                   <div className="accordion-body">
-                     <p>To Edit your account, please follow these steps:</p>
+                     <p>When you are on a job you are expexted to update the status during each step:</p>
                      <ul>
-                       <li>Go to our website and sign in to your account.</li>
-                       <li>Click on The Settings Tab on the navigation bar</li>
-                       <li>Edit any field as you see fit</li>
+                       <li>When you accept a job the status is set to "accepted".</li>
+                       <li>When you successfully pick up the order and the sender has paid you are expected to set the status to "In-Transit"</li>
+                       <li>when you successfully deliver the package to the recevier you are expected to set the status to "Completed"</li>
                        <li>Click on save changes</li>
                      </ul>
                    </div>
                  </div>
                </div>
+               <div className="accordion-item">
+                <h2 className="accordion-header" id="headingThree">
+                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    How do I edit my profile?
+                  </button>
+                </h2>
+                <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                  <div className="accordion-body">
+                    <p>To Edit your profile, please follow these steps:</p>
+                    <ul>
+                      <li>Go to our website and sign in to your account.</li>
+                      <li>Click on The Settings Tab on the navigation bar</li>
+                      <li>Edit any field as you see fit</li>
+                      <li>Click on save changes</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+               
+               <div className="accordion-item">
+                <h2 className="accordion-header" id="headingFour">
+                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    Customer Care
+                  </button>
+                </h2>
+                <div id="collapseFour" className="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                  <div className="accordion-body">
+                    You can contact us at 08139509185 or send us an email at Tobex360@gmail.com
+                  </div>
+                </div>
+              </div>
              </div>
            </div>
          </div>
