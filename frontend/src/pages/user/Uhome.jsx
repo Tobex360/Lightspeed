@@ -8,6 +8,7 @@ import {
   EyeOutlined, PlusOutlined, ShoppingOutlined, 
   ArrowUpOutlined, ArrowDownOutlined, CheckCircleOutlined 
 } from '@ant-design/icons';
+import { API_URL } from "../../config/api";
 
 const { Title, Text } = Typography;
 
@@ -24,7 +25,7 @@ function Uhome() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+  // const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
 
   useEffect(() => {
     const user = localStorage.getItem('user');

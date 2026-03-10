@@ -5,6 +5,7 @@ import { Card, Timeline, Tag, Spin, Alert } from 'antd';
 import BackButton from '../../components/BackButton';
 import DeliveryAnimation from '../../components/DeliveryAnimation';
 import axios from 'axios';
+import { API_URL } from "../../config/api";
 
 function TrackOrder() {
   const { trackingNumber } = useParams();
@@ -12,7 +13,7 @@ function TrackOrder() {
   const [driverLocation, setDriverLocation] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+  // const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
 
   useEffect(() => {
     fetchOrderDetails();

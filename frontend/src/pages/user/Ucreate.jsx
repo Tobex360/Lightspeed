@@ -3,6 +3,7 @@ import { Input, Button, Form, message, Select, Spin } from 'antd'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
+import { API_URL } from "../../config/api";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -13,7 +14,7 @@ function Ucreate() {
   const [drivers, setDrivers] = useState([]);
   const [loadingDrivers, setLoadingDrivers] = useState(true);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+//   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
 
   const navigate = useNavigate();
 

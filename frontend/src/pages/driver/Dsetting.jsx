@@ -3,6 +3,7 @@ import { Input, Button, Form, message, Spin, Switch } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import BackButton from '../../components/BackButton'
 import axios from 'axios'
+import { API_URL } from "../../config/api";
 
 function Dsetting() {
   const [form] = Form.useForm()
@@ -11,7 +12,7 @@ function Dsetting() {
   const [isAvailable, setIsAvailable] = useState(false)
   const navigate = useNavigate()
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+  // const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
 
   useEffect(() => {
     // Check if user is logged in
