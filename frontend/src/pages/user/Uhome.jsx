@@ -345,6 +345,16 @@ function Uhome() {
         <Col xs={24} sm={12} lg={6}>
           <Card variant={false} hoverable>
             <Statistic 
+              title="Awaiting You" 
+              value={receiverPendingOrders.length} 
+              prefix={<ShoppingOutlined />} 
+              styles={{ content: { color: '#faad14'} }} 
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card variant={false} hoverable>
+            <Statistic 
               title="Outgoing" 
               value={outgoingOrders.length} 
               prefix={<ArrowUpOutlined />} 
@@ -362,16 +372,7 @@ function Uhome() {
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card variant={false} hoverable>
-            <Statistic 
-              title="Awaiting You" 
-              value={receiverPendingOrders.length} 
-              prefix={<ShoppingOutlined />} 
-              styles={{ content: { color: '#faad14'} }} 
-            />
-          </Card>
-        </Col>
+        
         <Col xs={24} sm={12} lg={6}>
           <Card variant={false} hoverable>
             <Statistic 
