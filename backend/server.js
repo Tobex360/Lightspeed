@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 7000;
 const DB_URL = process.env.DB_URL;
 
 app.use(cors({
-    origin:['http://localhost:5173','https://your-frontend-url.vercel.app'],
+    origin:['https://lightspeed-red.vercel.app/'],
     credentials: true
 }));
 app.use(express.json());
