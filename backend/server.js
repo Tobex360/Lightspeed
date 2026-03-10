@@ -28,8 +28,11 @@ app.use('/order',orderRoutes);
 
 mongoose.connect(DB_URL).then((result)=>{
     console.log('succesfully connected to mongodb')
+    console.log('Connection string:', process.env.DB_URL);
 }).catch(err=>{
-    console.log('connected to mongo db')
+    console.error('❌ MongoDB Connection Failed:');
+    console.error('Error:', err.message);
+    console.error('Full error:', err);
 })
 
 app.listen(PORT,()=>{
