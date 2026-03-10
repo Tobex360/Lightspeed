@@ -15,7 +15,10 @@ require('dotenv').config();
 const PORT = process.env.PORT || 7000;
 const DB_URL = process.env.DB_URL;
 
-app.use(cors());
+app.use(cors({
+    origin:['http://localhost:5173','https://your-frontend-url.vercel.app'],
+    credentials: true
+}));
 app.use(express.json());
 
 
