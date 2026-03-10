@@ -73,6 +73,7 @@ function Uhelp() {
                       <li>"in-transit" means the driver has collected the order from the Sender and is now on his way to the reciver</li>
                       <li>"complete" means the driver has deliverd the order to the recevier successfully</li>
                       <li>"cancelled" means either the recevier or the driver has rejected the order</li>
+                      <li>You can also click on he tracking number to view the live progress of the order</li>
                     </ul>
                   </div>
                 </div>
