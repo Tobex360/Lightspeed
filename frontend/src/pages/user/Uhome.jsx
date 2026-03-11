@@ -63,6 +63,7 @@ function Uhome() {
   };
 
   const fetchIncomingOrders = async () => {
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/order/incoming/${userId}`);
       const data = await response.json();
@@ -72,10 +73,13 @@ function Uhome() {
     } catch (error) {
       console.error('Error fetching incoming orders:', error);
       message.error('Failed to fetch incoming orders');
+    } finally{
+      setLoading(false)
     }
   };
 
   const fetchReceiverPendingOrders = async () => {
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/order/receiver-pending/${userId}`);
       const data = await response.json();
@@ -85,11 +89,13 @@ function Uhome() {
     } catch (error) {
       console.error('Error fetching receiver pending orders:', error);
       message.error('Failed to fetch pending orders');
+    } finally{
+      setLoading(false)
     }
   };
 
   const fetchCompletedOrders = async () => {
-    setCompletedLoading(true);
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/order/completed/${userId}`);
       const data = await response.json();
@@ -100,12 +106,13 @@ function Uhome() {
       console.error('Error fetching completed orders:', error);
       message.error('Failed to fetch completed orders');
     } finally {
-      setCompletedLoading(false);
+      setLoading(false);
     }
   };
 
   // Handler functions
   const handleAcceptOrder = async (orderId) => {
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/order/accept-receiver/${orderId}`, {
         method: 'PUT'
@@ -118,10 +125,13 @@ function Uhome() {
     } catch (error) {
       console.error('Error accepting order:', error);
       message.error('Failed to accept order');
+    } finally{
+      setLoading(false);
     }
   };
 
   const handleDeclineOrder = async (orderId) => {
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/order/decline-receiver/${orderId}`, {
         method: 'PUT'
@@ -134,10 +144,13 @@ function Uhome() {
     } catch (error) {
       console.error('Error declining order:', error);
       message.error('Failed to decline order');
+    } finally{
+      setLoading(false);
     }
   };
 
   const handleDeleteOrder = async (orderId) => {
+    setLoading(true);
     setDeleting(prev => ({ ...prev, [orderId]: true }));
     try {
       const response = await fetch(`${API_URL}/order/${orderId}`, {
@@ -153,6 +166,7 @@ function Uhome() {
       message.error('Failed to delete order');
     } finally {
       setDeleting(prev => ({ ...prev, [orderId]: false }));
+      setLoading(false);
     }
   };
 
@@ -224,6 +238,7 @@ function Uhome() {
             type='primary' 
             size='small'
             onClick={() => handleAcceptOrder(record._id)}
+            loading ={loading}
           >
             Accept
           </Button>
@@ -231,6 +246,7 @@ function Uhome() {
             danger 
             size='small'
             onClick={() => handleDeclineOrder(record._id)}
+            loading={loading}
           >
             Decline
           </Button>
@@ -315,7 +331,7 @@ function Uhome() {
       children: <Table 
         columns={completedColumns} 
         dataSource={completedOrders.map(o => ({...o, key: o._id}))} 
-        loading={completedLoading} 
+        loading={loading} 
         pagination={{ pageSize: 10 }}
       />,
     },
