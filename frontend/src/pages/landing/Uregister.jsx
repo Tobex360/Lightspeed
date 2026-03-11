@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './register.css';
 import userImg from '../../assets/user.avif';
 import { Input, Button, Form, message, Card, Typography, Row, Col, Divider } from 'antd';
@@ -6,12 +6,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthUservices from '../../services/authUservices';
 import { UserOutlined, MailOutlined, PhoneOutlined, LockOutlined, HomeOutlined } from '@ant-design/icons';
 
+const [loading, setLoading] = useState(false);
 const { Title, Text } = Typography;
 
 function Uregister() {
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
+    setLoading(true);
     try {
       const data = {
         firstname: values.firstname,
@@ -33,6 +35,8 @@ function Uregister() {
     } catch (err) {
       console.log(err);
       message.error("Registration failed");
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -102,7 +106,7 @@ function Uregister() {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block className="login-btn">
+            <Button type="primary" htmlType="submit" block className="login-btn" loading={loading}>
               Create My Account
             </Button>
           </Form.Item>

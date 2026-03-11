@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './register.css';
 import driverImg from '../../assets/driver.avif';
 import { Input, Button, Form, message, Card, Typography, Row, Col, Divider } from 'antd';
@@ -13,12 +13,15 @@ import {
   CarOutlined 
 } from '@ant-design/icons';
 
+const [loading, setLoading] = useState(false);
+
 const { Title, Text } = Typography;
 
 function Dregister() {
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
+    setLoading(true);
     try {
       const data = {
         firstname: values.firstname,
@@ -41,6 +44,8 @@ function Dregister() {
     } catch (err) {
       console.error(err);
       message.error("Registration failed. Please try again.");
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -114,7 +119,7 @@ function Dregister() {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block className="login-btn driver-theme-btn">
+            <Button type="primary" htmlType="submit" block className="login-btn driver-theme-btn" loading={loading}>
               Apply to Drive
             </Button>
           </Form.Item>
