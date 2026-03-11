@@ -268,7 +268,7 @@ function Uhome() {
     { title: 'Package', dataIndex: 'packageName', key: 'packageName' },
     { title: 'Sender', dataIndex: ['sender', 'username'], key: 'sender' },
     { title: 'Receiver', dataIndex: ['receiver', 'username'], key: 'receiver' },
-    { title: 'Status', dataIndex: 'status', key: 'status', render: (s) => <Tag color="green">{s}</Tag> },
+    { title: 'Status', dataIndex: 'status', key: 'status', render: (s) => <Tag color={statusColorMap[s]}>{s.toUpperCase()}</Tag>  },
     {
       title: 'Action',
       key: 'action',
