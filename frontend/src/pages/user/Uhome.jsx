@@ -415,92 +415,103 @@ function Uhome() {
 
       {/* Details Modal */}
       <Modal
-        title={<Title level={4}>Order Details</Title>}
-        open={isModalVisible}
-        onCancel={handleModalClose}
-        footer={[<Button key="close" type='primary' onClick={handleModalClose}>Close</Button>]}
-        width={800}
-      >
-        {selectedOrder ? (
-          <div style={{ maxHeight: '60vh', overflowY: 'auto', paddingRight: '10px' }}>
-            <Divider titlePlacement="left">Package Information</Divider>
-            <Descriptions variant column={2} size="small">
-              <Descriptions.Item label="Package Name" span={2}>
-                {selectedOrder.packageName}
-              </Descriptions.Item>
-              <Descriptions.Item label="Size">
-                {selectedOrder.size}
-              </Descriptions.Item>
-              <Descriptions.Item label="Tracking Number">
-                <Tag color="blue">{selectedOrder.trackingNumber}</Tag>
-              </Descriptions.Item>
-              <Descriptions.Item label="Description" span={2}>
-                {selectedOrder.description || 'No description'}
-              </Descriptions.Item>
-              <Descriptions.Item label="Status" span={2}>
-                <Tag color={statusColorMap[selectedOrder.status]}>
-                  {selectedOrder.status?.toUpperCase()}
-                </Tag>
-              </Descriptions.Item>
-            </Descriptions>
-
-            <Divider titlePlacement="left">Sender Information</Divider>
-            <Descriptions variant column={2} size="small">
-              <Descriptions.Item label="Name" span={2}>
-                {selectedOrder.sender?.firstname} {selectedOrder.sender?.lastname}
-              </Descriptions.Item>
-              <Descriptions.Item label="Username">
-                {selectedOrder.sender?.username}
-              </Descriptions.Item>
-              <Descriptions.Item label="Phone">
-                {selectedOrder.sender?.phonenumber}
-              </Descriptions.Item>
-              <Descriptions.Item label="Email" span={2}>
-                {selectedOrder.sender?.email}
-              </Descriptions.Item>
-              <Descriptions.Item label="Address" span={2}>
-                {selectedOrder.sender?.address?.street}, {selectedOrder.sender?.address?.city}, {selectedOrder.sender?.address?.state}
-              </Descriptions.Item>
-            </Descriptions>
-
-            <Divider titlePlacement="left">Receiver Information</Divider>
-            <Descriptions variant column={2} size="small">
-              <Descriptions.Item label="Name" span={2}>
-                {selectedOrder.receiver?.firstname} {selectedOrder.receiver?.lastname}
-              </Descriptions.Item>
-              <Descriptions.Item label="Username">
-                {selectedOrder.receiver?.username}
-              </Descriptions.Item>
-              <Descriptions.Item label="Phone">
-                {selectedOrder.receiver?.phonenumber}
-              </Descriptions.Item>
-              <Descriptions.Item label="Email" span={2}>
-                {selectedOrder.receiver?.email}
-              </Descriptions.Item>
-              <Descriptions.Item label="Address" span={2}>
-                {selectedOrder.receiver?.address?.street}, {selectedOrder.receiver?.address?.city}, {selectedOrder.receiver?.address?.state}
-              </Descriptions.Item>
-            </Descriptions>
-
-            {selectedOrder.driver && (
-              <>
-                <Divider titlePlacement="left">Driver Information</Divider>
-                <Descriptions variant column={2} size="small">
-                  <Descriptions.Item label="Name" span={2}>
-                    {selectedOrder.driver?.firstname} {selectedOrder.driver?.lastname}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Phone">
-                    {selectedOrder.driver?.phonenumber}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Vehicle">
-                    {selectedOrder.driver?.vehicle}
-                  </Descriptions.Item>
-                </Descriptions>
-              </>
-            )}
-          </div>
-        ) : <Empty description="No order selected" />}
-      </Modal>
+              title={<Title level={4}><EyeOutlined /> Manifest Details</Title>}
+              open={isModalVisible}
+              onCancel={handleModalClose}
+              footer={[<Button key="close" type='primary' onClick={handleModalClose} size="large">Got it</Button>]}
+              width={800}
+              centered
+            >
+              {selectedOrder && (
+                  <>
+                    <Divider titlePlacement='left'>Package Information</Divider>
+                    <Descriptions bordered column={2}>
+                      <Descriptions.Item label="Package Name" >
+                        {selectedOrder.packageName}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Size">
+                        {selectedOrder.size}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Description" span={2}>
+                        {selectedOrder.description || 'No description provided'}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Tracking Number" span={2}>
+                        <Tag color="blue">{selectedOrder.trackingNumber}</Tag>
+                      </Descriptions.Item>
+                    </Descriptions>
+          
+                    <Divider titlePlacement='left'>Sender Information</Divider>
+                    <Descriptions bordered column={2}>
+                      <Descriptions.Item label="Name" span={2}>
+                        {selectedOrder.sender?.firstname} {selectedOrder.sender?.lastname}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Username">
+                        {selectedOrder.sender?.username}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Phone Number">
+                        {selectedOrder.sender?.phonenumber}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Email" span={2}>
+                        {selectedOrder.sender?.email}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Address" span={2}>
+                        {selectedOrder.sender?.address?.street}, {selectedOrder.sender?.address?.city}, {selectedOrder.sender?.address?.state}
+                      </Descriptions.Item>
+                    </Descriptions>
+          
+          
+                    <Divider titlePlacement='left'>Receiver Information</Divider>
+                    <Descriptions bordered column={2}>
+                      <Descriptions.Item label="Name" span={2}>
+                        {selectedOrder.receiver?.firstname} {selectedOrder.receiver?.lastname}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Username">
+                        {selectedOrder.receiver?.username}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Phone Number">
+                        {selectedOrder.receiver?.phonenumber}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Email" span={2}>
+                        {selectedOrder.receiver?.email}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Address" span={2}>
+                        {selectedOrder.receiver?.address?.street}, {selectedOrder.receiver?.address?.city}, {selectedOrder.receiver?.address?.state}
+                      </Descriptions.Item>
+                    </Descriptions>
+          
+          
+                    <Divider titlePlacement='left'>Driver Information</Divider>
+                    <Descriptions bordered column={2}>
+                      <Descriptions.Item label="Name" span={2}>
+                        {selectedOrder.driver?.firstname} {selectedOrder.driver?.lastname}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Username">
+                        {selectedOrder.driver?.username}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Phone Number">
+                        {selectedOrder.driver?.phonenumber || 'N/A'}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Email" span={2}>
+                        {selectedOrder.driver?.email || 'N/A'}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Vehicle" span={2}>
+                        {selectedOrder.driver?.vehicle || 'N/A'}
+                      </Descriptions.Item>
+                    </Descriptions>
+          
+          
+                    <Divider titlePlacement='left'>Timeline</Divider>
+                    <Descriptions bordered column={1}>
+                      <Descriptions.Item label="Created At">
+                        {new Date(selectedOrder.createdAt).toLocaleString()}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Updated At">
+                        {new Date(selectedOrder.updatedAt).toLocaleString()}
+                      </Descriptions.Item>
+                    </Descriptions>
+                  </>
+                )}
+            </Modal>
     </div>
   );
 }
