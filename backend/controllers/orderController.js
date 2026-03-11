@@ -189,7 +189,7 @@ exports.declineOrderByDriver = async(req,res)=>{
         
         const order = await Order.findByIdAndUpdate(
             orderId,
-            {status: 'cancelled', driver: null},
+            {status: 'cancelled'},
             {new: true}
         ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
         
