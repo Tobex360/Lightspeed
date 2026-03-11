@@ -20,8 +20,6 @@ function Dhome() {
   const [ongoingOrders, setOngoingOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [ongoingLoading, setOngoingLoading] = useState(false);
-  const [completedLoading, setCompletedLoading] = useState(false);
   const [statusUpdating, setStatusUpdating] = useState({});
   const [deleting, setDeleting] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -74,7 +72,7 @@ function Dhome() {
   };
 
   const fetchDriverOngoingOrders = async () => {
-    setOngoingLoading(true);
+    setLoading(true);
     try {
       console.log('Fetching driver ongoing orders for driverId:', driverId);
       const response = await fetch(`${API_URL}/order/driver-ongoing/${driverId}`);
@@ -90,12 +88,12 @@ function Dhome() {
       console.log('Error fetching driver ongoing orders:', error);
       message.error('Failed to fetch ongoing orders');
     } finally {
-      setOngoingLoading(false);
+      setLoading(false);
     }
   };
 
   const fetchCompletedOrders = async () => {
-    setCompletedLoading(true);
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/order/completed/${driverId}`);
       const data = await response.json();
@@ -106,12 +104,13 @@ function Dhome() {
       console.log('Error fetching completed orders:', error);
       message.error('Failed to fetch completed orders');
     } finally {
-      setCompletedLoading(false);
+      setLoading(false);
     }
   };
 
   // Handler functions
   const handleAcceptOrder = async (orderId) => {
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/order/accept-driver/${orderId}`, {
         method: 'PUT'
@@ -125,10 +124,13 @@ function Dhome() {
     } catch (error) {
       console.log('Error accepting order:', error);
       message.error('Failed to accept order');
+    } finally{
+      setLoading(false);
     }
   };
 
   const handleDeclineOrder = async (orderId) => {
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/order/decline-driver/${orderId}`, {
         method: 'PUT'
@@ -141,10 +143,13 @@ function Dhome() {
     } catch (error) {
       console.log('Error declining order:', error);
       message.error('Failed to decline order');
+    } finally{
+      setLoading(false);
     }
   };
 
   const handleStatusChange = async (orderId, newStatus) => {
+    setLoading(true);
     setStatusUpdating(prev => ({ ...prev, [orderId]: true }));
     try {
       const response = await fetch(`${API_URL}/order/update-status/${orderId}`, {
@@ -165,10 +170,13 @@ function Dhome() {
       message.error('Failed to update order status');
     } finally {
       setStatusUpdating(prev => ({ ...prev, [orderId]: false }));
+      setLoading(false);
     }
+
   };
 
   const handleDeleteOrder = async (orderId) => {
+    setLoading(true);
     setDeleting(prev => ({ ...prev, [orderId]: true }));
     try {
       const response = await fetch(`${API_URL}/order/${orderId}`, {
@@ -184,6 +192,7 @@ function Dhome() {
       message.error('Failed to delete order');
     } finally {
       setDeleting(prev => ({ ...prev, [orderId]: false }));
+      setLoading(false);
     }
   };
 
@@ -228,6 +237,7 @@ function Dhome() {
             type='primary' 
             size='small'
             onClick={() => handleAcceptOrder(record._id)}
+            loading={loading}
           >
             Accept
           </Button>
@@ -235,6 +245,7 @@ function Dhome() {
             danger 
             size='small'
             onClick={() => handleDeclineOrder(record._id)}
+            loading={loading}
           >
             Decline
           </Button>
@@ -281,6 +292,7 @@ function Dhome() {
           value={status}
           style={{ width: '140px' }}
           onChange={(newStatus) => handleStatusChange(record._id, newStatus)}
+          loading={loading}
           disabled={statusUpdating[record._id]}
           options={[
             { label: 'Accepted', value: 'accepted' },
@@ -389,7 +401,7 @@ function Dhome() {
         <Table 
           columns={ongoingColumns} 
           dataSource={ongoingOrders.map(o => ({...o, key: o._id}))} 
-          loading={ongoingLoading}
+          loading={loading}
           pagination={{ pageSize: 10 }}
         />
       ),
@@ -405,7 +417,7 @@ function Dhome() {
         <Table 
           columns={completedColumns} 
           dataSource={completedOrders.map(o => ({...o, key: o._id}))} 
-          loading={completedLoading}
+          loading={loading}
           pagination={{ pageSize: 10 }}
         />
       ),

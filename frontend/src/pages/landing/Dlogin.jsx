@@ -11,9 +11,11 @@ const { Title, Text } = Typography;
 function Dlogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
+    setLoading(true);
     try {
       let data = { username, password };
       const response = await AuthDservices.loginDriver(data);
@@ -31,6 +33,8 @@ function Dlogin() {
       } else {
         message.error("Something went wrong. Please try again.");
       }
+    }finally{
+      setLoading(false);
     }
   }
 
@@ -71,7 +75,7 @@ function Dlogin() {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block className="login-btn driver-theme-btn">
+            <Button type="primary" htmlType="submit" block className="login-btn driver-theme-btn" loading={loading}>
               Start Driving
             </Button>
           </Form.Item>
