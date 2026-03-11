@@ -423,7 +423,7 @@ function Uhome() {
       >
         {selectedOrder ? (
           <div style={{ maxHeight: '60vh', overflowY: 'auto', paddingRight: '10px' }}>
-            <Divider orientation="left">Package Information</Divider>
+            <Divider titlePlacement="left">Package Information</Divider>
             <Descriptions variant column={2} size="small">
               <Descriptions.Item label="Package Name" span={2}>
                 {selectedOrder.packageName}
@@ -444,7 +444,7 @@ function Uhome() {
               </Descriptions.Item>
             </Descriptions>
 
-            <Divider orientation="left">Sender Information</Divider>
+            <Divider titlePlacement="left">Sender Information</Divider>
             <Descriptions variant column={2} size="small">
               <Descriptions.Item label="Name" span={2}>
                 {selectedOrder.sender?.firstname} {selectedOrder.sender?.lastname}
@@ -463,7 +463,7 @@ function Uhome() {
               </Descriptions.Item>
             </Descriptions>
 
-            <Divider orientation="left">Receiver Information</Divider>
+            <Divider titlePlacement="left">Receiver Information</Divider>
             <Descriptions variant column={2} size="small">
               <Descriptions.Item label="Name" span={2}>
                 {selectedOrder.receiver?.firstname} {selectedOrder.receiver?.lastname}
@@ -484,7 +484,7 @@ function Uhome() {
 
             {selectedOrder.driver && (
               <>
-                <Divider orientation="left">Driver Information</Divider>
+                <Divider titlePlacement="left">Driver Information</Divider>
                 <Descriptions variant column={2} size="small">
                   <Descriptions.Item label="Name" span={2}>
                     {selectedOrder.driver?.firstname} {selectedOrder.driver?.lastname}
