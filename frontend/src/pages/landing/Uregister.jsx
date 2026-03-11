@@ -6,10 +6,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthUservices from '../../services/authUservices';
 import { UserOutlined, MailOutlined, PhoneOutlined, LockOutlined, HomeOutlined } from '@ant-design/icons';
 
-const [loading, setLoading] = useState(false);
 const { Title, Text } = Typography;
 
 function Uregister() {
+  
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {

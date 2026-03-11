@@ -13,11 +13,12 @@ import {
   CarOutlined 
 } from '@ant-design/icons';
 
-const [loading, setLoading] = useState(false);
 
 const { Title, Text } = Typography;
 
 function Dregister() {
+  
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
