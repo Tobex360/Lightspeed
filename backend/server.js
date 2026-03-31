@@ -25,7 +25,7 @@ const io = new Server(server, {
 // .env stuff
 require('dotenv').config();
 const PORT = process.env.PORT || 7000;
-const DB_URL = process.env.DB_URL;
+const DB_URL3 = process.env.DB_URL3;
 
 // middleware
 app.use(cors());
@@ -39,7 +39,7 @@ app.use('/driver',authDroutes);
 app.use('/order',orderRoutes);
 
 //MongoDB connection
-mongoose.connect(DB_URL).then((result)=>{
+mongoose.connect(DB_URL3).then((result)=>{
     console.log('succesfully connected to mongodb')
 }).catch(err=>{
     console.log('connected to mongo db')
