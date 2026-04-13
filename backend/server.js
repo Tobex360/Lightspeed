@@ -25,10 +25,21 @@ app.use(cors({
 }));
 app.use(express.json());
 
+//health route for uptime robot
+
+app.get('/api/health',(req, res)=>{
+    res.status(200).json({ status: 'ok' })
+})
+
+
 
 app.use('/user',authUroutes);
 app.use('/driver',authDroutes);
 app.use('/order',orderRoutes);
+
+app.listen(PORT,()=>{
+    console.log(`server started at ${PORT}`);
+})
 
 mongoose.connect(DB_URL).then((result)=>{
     console.log('succesfully connected to mongodb')
@@ -38,6 +49,3 @@ mongoose.connect(DB_URL).then((result)=>{
     console.error('Full error:', err);
 })
 
-app.listen(PORT,()=>{
-    console.log(`server started at ${PORT}`);
-})
