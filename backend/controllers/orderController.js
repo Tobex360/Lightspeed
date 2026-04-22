@@ -298,6 +298,102 @@ exports.deleteOrder = async(req,res)=>{
         res.status(500).send({message: err.message})
     }
 }
+
+exports.updateTrackingStatus = async(req,res)=>{
+    try{
+        const {orderId} = req.params;
+        const {isTrackingActive} = req.body;
+        
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).send({message: "Invalid order ID"});
+        }
+        
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            {isTrackingActive: isTrackingActive},
+            {new: true}
+        ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
+        
+        if (!order) {
+            return res.status(404).send({message: "Order not found"});
+        }
+        
+        res.status(200).send({message:"Tracking status updated", order: order})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.updateDriverLocation = async(req,res)=>{
+    try{
+        const {orderId} = req.params;
+        const {latitude, longitude} = req.body;
+        
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).send({message: "Invalid order ID"});
+        }
+        
+        if (latitude === undefined || longitude === undefined) {
+            return res.status(400).send({message: "Latitude and longitude are required"});
+        }
+        
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            {
+                driverLocation: {
+                    latitude: latitude,
+                    longitude: longitude,
+                    timestamp: new Date()
+                }
+            },
+            {new: true}
+        ).populate('sender', 'username').populate('receiver', 'username').populate('driver', 'username');
+        
+        if (!order) {
+            return res.status(404).send({message: "Order not found"});
+        }
+        
+        res.status(200).send({message:"Driver location updated", order: order})
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
+exports.getTrackingInfo = async(req,res)=>{
+    try{
+        const {orderId} = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).send({message: "Invalid order ID"});
+        }
+        
+        const order = await Order.findById(orderId)
+            .populate('sender','username firstname lastname email address phonenumber')
+            .populate('receiver','username firstname lastname email address phonenumber')
+            .populate('driver', 'username firstname lastname email vehicle phonenumber');
+        
+        if (!order) {
+            return res.status(404).send({message: "Order not found"});
+        }
+        
+        res.status(200).send({
+            message:"Tracking info retrieved", 
+            order: order,
+            trackingData: {
+                isTrackingActive: order.isTrackingActive,
+                driverLocation: order.driverLocation,
+                pickupLocation: order.pickupLocation,
+                deliveryLocation: order.deliveryLocation
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.status(500).send({message: err.message})
+    }
+}
+
 exports.trackOrder = async(req,res)=>{
     try{
         const {trackingNumber} = req.params;

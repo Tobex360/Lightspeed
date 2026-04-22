@@ -8,6 +8,7 @@ import {
   ClockCircleOutlined, InboxOutlined 
 } from '@ant-design/icons';
 import { API_URL } from "../../config/api";
+import { updateTrackingStatus, updateOrderLocation, watchGeolocation } from '../../services/geolocationService';
 
 const { Title, Text } = Typography;
 
@@ -24,6 +25,8 @@ function Dhome() {
   const [deleting, setDeleting] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [trackingOrders, setTrackingOrders] = useState({});
+  const [trackingWatchers, setTrackingWatchers] = useState({});
 
   // const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
 
@@ -48,6 +51,17 @@ function Dhome() {
       fetchCompletedOrders();
     }
   }, [driverId]);
+
+  // Cleanup geolocation watchers on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(trackingWatchers).forEach(watcherId => {
+        if (watcherId) {
+          navigator.geolocation.clearWatch(watcherId);
+        }
+      });
+    };
+  }, [trackingWatchers]);
 
   // Fetch functions
   const fetchDriverPendingOrders = async () => {
@@ -145,6 +159,58 @@ function Dhome() {
       message.error('Failed to decline order');
     } finally{
       setLoading(false);
+    }
+  };
+
+  const handleToggleTracking = async (orderId) => {
+    try {
+      const isCurrentlyTracking = trackingOrders[orderId];
+      const newTrackingStatus = !isCurrentlyTracking;
+      
+      // Update backend
+      await updateTrackingStatus(orderId, newTrackingStatus);
+      
+      // Update local state
+      setTrackingOrders(prev => ({
+        ...prev,
+        [orderId]: newTrackingStatus
+      }));
+      
+      if (newTrackingStatus) {
+        // Start watching geolocation
+        const watcherId = watchGeolocation(async (position) => {
+          try {
+            await updateOrderLocation(orderId, position.latitude, position.longitude);
+          } catch (error) {
+            console.error('Error updating location:', error);
+          }
+        });
+        
+        // Store watcher ID
+        setTrackingWatchers(prev => ({
+          ...prev,
+          [orderId]: watcherId
+        }));
+        
+        message.success('Live tracking enabled');
+      } else {
+        // Stop watching geolocation
+        const watcherId = trackingWatchers[orderId];
+        if (watcherId) {
+          navigator.geolocation.clearWatch(watcherId);
+        }
+        
+        setTrackingWatchers(prev => {
+          const newWatchers = { ...prev };
+          delete newWatchers[orderId];
+          return newWatchers;
+        });
+        
+        message.success('Live tracking disabled');
+      }
+    } catch (error) {
+      console.error('Error toggling tracking:', error);
+      message.error('Failed to toggle tracking');
     }
   };
 
@@ -301,6 +367,19 @@ function Dhome() {
           ]}
         />
       ),
+    },
+    {
+      title: 'Tracking',
+      key: 'tracking',
+      render: (_, record) => (
+        <Button
+          type={trackingOrders[record._id] ? 'primary' : 'default'}
+          size='small'
+          onClick={() => handleToggleTracking(record._id)}
+        >
+          {trackingOrders[record._id] ? '● Live' : 'Enable'}
+        </Button>
+      )
     },
     {
       title: 'Action',

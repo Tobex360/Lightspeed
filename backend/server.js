@@ -13,7 +13,7 @@ require('dotenv').config();
 
 
 const PORT = process.env.PORT || 7000;
-const DB_URL = process.env.DB_URL;
+const DB_URL = process.env.DB_URL4;
 
 app.use(cors({
     origin:[

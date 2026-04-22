@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Card, Timeline, Tag, Spin, Alert } from 'antd';
 import BackButton from '../../components/BackButton';
 import DeliveryAnimation from '../../components/DeliveryAnimation';
+import TrackingMap from '../../components/TrackingMap';
 import axios from 'axios';
 import { API_URL } from "../../config/api";
 
@@ -11,12 +12,22 @@ function TrackOrder() {
   const { trackingNumber } = useParams();
   const [order, setOrder] = useState(null);
   const [driverLocation, setDriverLocation] = useState(null);
+  const [selectedDeliveryLocation, setSelectedDeliveryLocation] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [pollingInterval, setPollingInterval] = useState(null);
 
   // const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
 
   useEffect(() => {
     fetchOrderDetails();
+    
+    // Set up polling to update tracking info every 5 seconds
+    const interval = setInterval(fetchOrderDetails, 5000);
+    setPollingInterval(interval);
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [trackingNumber]);
 
 
@@ -24,12 +35,21 @@ function TrackOrder() {
     try {
       const response = await axios.get(`${API_URL}/order/track/${trackingNumber}`);
       setOrder(response.data.order);
-      setDriverLocation(response.data.order.driverLocation);
+      
+      // Update driver location if tracking is active
+      if (response.data.order.isTrackingActive && response.data.order.driverLocation) {
+        setDriverLocation(response.data.order.driverLocation);
+      }
+      
       setLoading(false);
     } catch (error) {
       console.error('Error fetching order:', error);
       setLoading(false);
     }
+  };
+
+  const handleDeliveryLocationSelect = (location) => {
+    setSelectedDeliveryLocation(location);
   };
 
   if (loading) {
@@ -57,9 +77,15 @@ function TrackOrder() {
             <BackButton />
           </div>
           <div className="mb-3">
-            <Tag color={'red'}>
-              ● Live Tracking Active
-            </Tag>
+            {order.isTrackingActive ? (
+              <Tag color={'green'}>
+                ● Live Tracking Active
+              </Tag>
+            ) : (
+              <Tag color={'orange'}>
+                ● Live Tracking Disabled
+              </Tag>
+            )}
           </div>
 
           {/* Header */}
@@ -78,6 +104,18 @@ function TrackOrder() {
           receiverName={order.receiver?.username}
           senderName={order.sender?.username}/>
           <br />
+
+          {/* Live Tracking Map */}
+          {order.isTrackingActive && (order.driverLocation || order.deliveryLocation || order.pickupLocation) && (
+            <Card title="Live Driver Location & Select Delivery Point" className="mb-4">
+              <TrackingMap 
+                driverLocation={order.driverLocation}
+                deliveryLocation={selectedDeliveryLocation || order.deliveryLocation}
+                pickupLocation={order.pickupLocation}
+                onDeliveryLocationSelect={handleDeliveryLocationSelect}
+              />
+            </Card>
+          )}
 
           {/* Order Timeline */}
           <Card title="Order Timeline" className="mb-4">

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Input, Button, Form, message, Select, Spin } from 'antd'
+import { Input, Button, Form, message, Select, Spin, Card, Alert } from 'antd'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
+import TrackingMap from '../../components/TrackingMap';
 import { API_URL } from "../../config/api";
 
 const { TextArea } = Input;
@@ -13,8 +14,7 @@ function Ucreate() {
   const [loading, setLoading] = useState(false);
   const [drivers, setDrivers] = useState([]);
   const [loadingDrivers, setLoadingDrivers] = useState(true);
-
-//   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000';
+  const [selectedDeliveryLocation, setSelectedDeliveryLocation] = useState(null);
 
   const navigate = useNavigate();
 
@@ -37,9 +37,19 @@ function Ucreate() {
         }
     };
 
+    const handleDeliveryLocationSelect = (location) => {
+        setSelectedDeliveryLocation(location);
+    };
+
     const handleSubmit = async(values)=>{
         setLoading(true);
         try{
+            if (!selectedDeliveryLocation) {
+                message.error('Please select a delivery location on the map');
+                setLoading(false);
+                return;
+            }
+
             console.log('Form Values:', values);
             // Get sender
             const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -56,7 +66,8 @@ function Ucreate() {
                 driver: values.driver || null,
                 packageName: values.packagename,
                 size: values.size,
-                description: values.description
+                description: values.description,
+                deliveryLocation: selectedDeliveryLocation
             }
             console.log('Order data being sent:', orderData);
 
@@ -64,6 +75,7 @@ function Ucreate() {
 
             message.success('Order created successfully!');
             form.resetFields();
+            setSelectedDeliveryLocation(null);
             navigate('/uhome');
 
         }catch(err){
@@ -81,8 +93,26 @@ function Ucreate() {
     <section>
         <div className='container'>
             <div className='row'>
-                <div className='col-md-6 offset-md-3'>
+                <div className='col-md-8 offset-md-2'>
                     <h2> <BackButton /> CREATE ORDER</h2>
+                    
+                    {/* Delivery Location Map */}
+                    <Card title="Select Delivery Location" style={{ marginTop: '30px', marginBottom: '30px' }}>
+                        <TrackingMap 
+                            onDeliveryLocationSelect={handleDeliveryLocationSelect}
+                        />
+                    </Card>
+
+                    {selectedDeliveryLocation && (
+                        <Alert
+                            message="Delivery location selected"
+                            description={`Latitude: ${selectedDeliveryLocation.latitude.toFixed(4)}, Longitude: ${selectedDeliveryLocation.longitude.toFixed(4)}`}
+                            type="success"
+                            showIcon
+                            style={{ marginBottom: '20px' }}
+                        />
+                    )}
+
                     <div className='form' style={{ marginTop: '30px' }}>
                         <Form form={form} onFinish={handleSubmit} layout='vertical'>
                             <Form.Item
