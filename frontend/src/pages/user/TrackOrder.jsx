@@ -73,7 +73,7 @@ function TrackOrder() {
             </div>
           </Card>
 
-          <DeliveryAnimation 
+          <DeliveryAnimation
           status={order.status}
           receiverName={order.receiver?.username}
           senderName={order.sender?.username}/>
@@ -109,7 +109,7 @@ function TrackOrder() {
               )}
             </Timeline>
           </Card>
-          
+
         </div>
       </div>
     </div>
