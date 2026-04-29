@@ -20,7 +20,8 @@ exports.createOrder = async(req,res)=>{
             driver: data.driver ? new mongoose.Types.ObjectId(data.driver) : null,
             packageName: data.packageName,
             size: data.size,
-            description: data.description
+            description: data.description,
+            deliveryLocation:data.deliveryLocation
         });
         
         const result = await order.save();

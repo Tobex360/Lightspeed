@@ -1,10 +1,15 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Alert, Button, Space } from 'antd';
-import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, MarkerF, Polyline } from '@react-google-maps/api';
 
 function TrackingMap({ driverLocation, deliveryLocation, pickupLocation, onDeliveryLocationSelect }) {
   const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const [selectedLocation, setSelectedLocation] = useState(deliveryLocation);
+
+  // Sync selectedLocation with deliveryLocation prop
+  useEffect(() => {
+    setSelectedLocation(deliveryLocation);
+  }, [deliveryLocation]);
 
   const mapCenter = useMemo(() => {
     if (driverLocation?.latitude && driverLocation?.longitude) {
@@ -140,6 +145,22 @@ function TrackingMap({ driverLocation, deliveryLocation, pickupLocation, onDeliv
               }}
               title="Pickup Location"
               icon={markerOptions.pickup.icon}
+            />
+          )}
+          {/* Draw line from driver to delivery location if both exist */}
+          {driverLocation?.latitude && driverLocation?.longitude && (selectedLocation || deliveryLocation)?.latitude && (selectedLocation || deliveryLocation)?.longitude && (
+            <Polyline
+              path={[
+                { lat: driverLocation.latitude, lng: driverLocation.longitude },
+                { lat: (selectedLocation || deliveryLocation).latitude, lng: (selectedLocation || deliveryLocation).longitude }
+              ]}
+              options={{
+                strokeColor: '#EA4335',
+                strokeOpacity: 0.8,
+                strokeWeight: 4,
+                clickable: false,
+                geodesic: true,
+              }}
             />
           )}
         </GoogleMap>
