@@ -10,7 +10,9 @@ function TrackingMap({ driverLocation, deliveryLocation, pickupLocation, onDeliv
     if (driverLocation?.latitude && driverLocation?.longitude) {
       return { lat: driverLocation.latitude, lng: driverLocation.longitude };
     }
-    return { lat: 40.7128, lng: -74.0060 }; // Default: New York
+    return { lat: 4.8040, lng: 7.0376 }; // Default: New York
+
+    //4.8040299296737, 7.037664232855913
   }, [driverLocation]);
 
   const mapContainerStyle = {
@@ -23,6 +25,15 @@ function TrackingMap({ driverLocation, deliveryLocation, pickupLocation, onDeliv
     mapTypeControl: true,
     streetViewControl: false,
     fullscreenControl: true,
+    restriction: {
+      latLngBounds: {
+        north: 13.8856, // Northernmost point of Nigeria
+        south: 4.2721,  // Southernmost point of Nigeria
+        west: 2.6769,   // Westernmost point of Nigeria
+        east: 14.6788,  // Easternmost point of Nigeria
+      },
+      strictBounds: true,
+    },
   };
 
   const handleMapClick = (e) => {
